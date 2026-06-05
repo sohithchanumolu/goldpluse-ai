@@ -70,4 +70,8 @@ def main():
         )
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        asyncio.run(
+        send_message(f"❌ GoldPulse Error\n\n{str(e)}"))
