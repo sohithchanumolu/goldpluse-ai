@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoldPulse AI</title>
+
+```
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f7fa;
+        padding: 30px;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 40px;
+    }
+
+    .cards {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .card {
+        background: white;
+        width: 300px;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .card h2 {
+        margin-bottom: 15px;
+    }
+
+    .price {
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .trend {
+        font-size: 18px;
+        color: #555;
+    }
+
+    .footer {
+        margin-top: 40px;
+        text-align: center;
+        color: #777;
+    }
+
+    .notice {
+        background: #fff8e1;
+        border-left: 5px solid #f4b400;
+        padding: 20px;
+        margin-top: 30px;
+        border-radius: 10px;
+    }
+
+    .notice h3 {
+        margin-bottom: 10px;
+    }
+
+    .notice ul {
+        margin-top: 10px;
+        margin-left: 20px;
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<h1>📈 GoldPulse AI</h1>
+
+<p class="subtitle">
+    Hyderabad Gold Market Dashboard
+</p>
+
+<div class="cards">
+
+    <div class="card">
+        <h2>🥇 Estimated 24K Gold</h2>
+
+        <div class="price">
+            ₹{{ price_24k }}/g
+        </div>
+
+        <div class="trend">
+            Trend: {{ trend_24k }}
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>💍 Estimated 22K Gold</h2>
+
+        <div class="price">
+            ₹{{ price_22k }}/g
+        </div>
+
+        <div class="trend">
+            Trend: {{ trend_22k }}
+        </div>
+    </div>
+
+</div>
+
+<div class="notice">
+    <h3>⚠️ Price Estimate Notice</h3>
+
+    <p>
+        Prices shown are estimated Hyderabad retail rates
+        derived from international gold prices and USD/INR
+        exchange rates.
+    </p>
+
+    <ul>
+        <li>Import duties</li>
+        <li>GST</li>
+        <li>Jeweller premiums</li>
+        <li>Local market conditions</li>
+    </ul>
+
+    <p>
+        Actual retail prices may vary.
+    </p>
+</div>
+
+<div class="footer">
+    Powered by GoldPulse AI
+</div>
+```
+
+</body>
+
+</html>

@@ -55,6 +55,7 @@ def main():
         📈 Trend: {summary['trend']}
 
         {report}
+        ⚠️ Prices are estimated retail values based on international gold markets and USD/INR exchange rates. Actual local jeweller prices may vary.
     """
     asyncio.run(
         send_message(telegram_message)
