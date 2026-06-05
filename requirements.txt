@@ -1,0 +1,7 @@
+langchain
+langchain-google-genai
+python-dotenv
+requests
+pandas
+sqlalchemy
+python-telegram-bot
