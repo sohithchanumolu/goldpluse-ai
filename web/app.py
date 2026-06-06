@@ -8,7 +8,8 @@ sys.path.append(
 )
 from src.database import(
     SessionLocal,
-    get_last_n_days
+    get_last_n_days,
+    get_all_prices
 )
 
 app = FastAPI()
@@ -124,5 +125,19 @@ def dashboard(request: Request):
             "record_count": len(rows),
             "last_updated": latest.date,
             "ai_report": ai_report
+        }
+    )
+
+
+@app.get("/history")
+def history(request:Request):
+    session = SessionLocal()
+    prices = get_all_prices(session)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="history.html",
+        context={
+            "prices": prices
         }
     )

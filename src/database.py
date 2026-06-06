@@ -55,3 +55,10 @@ def get_last_n_days(session, days):
         .limit(days)
         .all()
     )
+
+def get_all_prices(session):
+    return (
+        session.query(GoldPrice)
+        .order_by(GoldPrice.date.desc())
+        .all()
+    )

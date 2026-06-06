@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GoldPulse History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background: #eef2f7;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #111827;
+            color: white;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>📊 Gold Price History</h1>
+    <table>
+
+        <tr>
+            <th>Date</th>
+            <th>City</th>
+            <th>24K Gold</th>
+            <th>22K Gold</th>
+        </tr>
+
+        {% for row in prices %}
+
+        <tr>
+            <td>{{ row.date }}</td>
+            <td>{{ row.city }}</td>
+            <td>₹{{ row.price_24k }}</td>
+            <td>₹{{ row.price_22k }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+</body>
+</html>
