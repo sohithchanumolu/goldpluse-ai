@@ -46,15 +46,32 @@
             <th>City</th>
             <th>24K Gold</th>
             <th>22K Gold</th>
+            <th>Daily Change</th>
         </tr>
 
-        {% for row in prices %}
+        {% for row in history_data %}
 
         <tr>
             <td>{{ row.date }}</td>
             <td>{{ row.city }}</td>
             <td>₹{{ row.price_24k }}</td>
             <td>₹{{ row.price_22k }}</td>
+            <td>
+            {% if row.daily_change > 0 %}
+                <span style="color:green;">
+                    +₹{{ "%.2f"|format(row.daily_change) }}
+                </span>
+
+            {% elif row.daily_change < 0 %}
+                <span style="color:red;">
+                    ₹{{ "%.2f"|format(row.daily_change) }}
+                </span>
+
+            {% else %}
+                -
+            {% endif %}
+
+            </td>
         </tr>
 
         {% endfor %}

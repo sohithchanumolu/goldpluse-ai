@@ -133,11 +133,27 @@ def dashboard(request: Request):
 def history(request:Request):
     session = SessionLocal()
     prices = get_all_prices(session)
+    history_data=[]
+
+    for i,row in enumerate(prices):
+        if i<len(prices)-1:
+            previous_price = prices[i+1].price_24k
+            daily_change = row.price_24k - previous_price
+        else:
+            daily_change = 0
+        
+        history_data.append({
+            "date": row.date,
+            "city": row.city,
+            "price_24k": row.price_24k,
+            "price_22k": row.price_22k,
+            "daily_change": daily_change
+        })
 
     return templates.TemplateResponse(
         request=request,
         name="history.html",
         context={
-            "prices": prices
+            "history_data": history_data
         }
     )
