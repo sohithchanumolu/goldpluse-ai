@@ -6,3 +6,6 @@ pandas
 sqlalchemy
 python-telegram-bot
 plotly
+fastapi
+uvicorn
+jinja2

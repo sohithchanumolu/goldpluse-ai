@@ -18,8 +18,15 @@ templates = Jinja2Templates(
     directory="web/templates"
 )
 
-
 @app.get("/")
+def home(request: Request):
+
+    return templates.TemplateResponse(
+        request=request,
+        name="home.html"
+    )
+
+@app.get("/dashboard")
 def dashboard(request: Request):
     session = SessionLocal()
     rows = get_last_n_days(
