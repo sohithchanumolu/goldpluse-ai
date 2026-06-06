@@ -1,32 +1,99 @@
 # GoldPulse AI
 
-## Overview
+## Track Gold. Understand Trends.
 
-GoldPulse AI is an intelligent gold-price monitoring system that collects gold market data, stores historical records, analyzes trends using AI, and delivers daily market reports directly to Telegram.
+GoldPulse AI is an AI-powered gold market intelligence platform that combines live gold price tracking, historical data analysis, interactive dashboards, and automated AI-generated market insights.
 
-The project combines data engineering, database management, AI-powered analysis, and automated notifications into a single end-to-end application.
+The system collects gold market data, stores historical records, analyzes trends using Google Gemini, and presents the results through a modern web dashboard and Telegram notifications.
 
 ---
 
 ## Features
 
-* Daily gold price tracking
-* Live USD/INR exchange rate integration
-* Historical data storage with SQLite
-* Trend analysis using Pandas
-* AI-generated market reports using Gemini
-* Telegram report delivery
-* Gold price alert system
-* Hyderabad-focused retail price estimation
-* Modular and extensible architecture
+### Live Gold Monitoring
+
+* 24K gold price tracking
+* 22K gold price tracking
+* USD/INR exchange rate integration
+* Hyderabad retail price estimation
+
+### AI Market Analysis
+
+* Gemini-powered market insights
+* Trend analysis
+* Investor recommendations
+* Automated daily reports
+
+### Interactive Dashboard
+
+* Landing page
+* Dashboard page
+* Historical records page
+* AI analysis page
+* About page
+
+### Data Visualization
+
+* 24K price trend charts
+* 22K price trend charts
+* Daily change tracking
+* Historical data storage
+
+### Notifications
+
+* Telegram alerts
+* Daily gold market reports
+* Price monitoring system
 
 ---
 
-## Tech Stack
+## Website Pages
+
+### Home
+
+Landing page introducing GoldPulse AI.
+
+### Dashboard
+
+Displays:
+
+* Current 24K gold price
+* Current 22K gold price
+* Trend indicators
+* Historical charts
+* AI market analysis
+
+### History
+
+Displays:
+
+* Historical gold prices
+* Daily price changes
+* Stored records
+
+### Analysis
+
+Displays:
+
+* Latest AI-generated market report
+
+### About
+
+Displays:
+
+* Project overview
+* Technology stack
+* Architecture
+* Roadmap
+
+---
+
+## Technology Stack
 
 ### Backend
 
 * Python
+* FastAPI
 
 ### Database
 
@@ -37,17 +104,44 @@ The project combines data engineering, database management, AI-powered analysis,
 
 * Pandas
 
-### AI & LLM
+### AI
 
-* LangChain
 * Google Gemini
+* LangChain
 
-### Integrations
+### Visualization
+
+* Plotly
+
+### Notifications
 
 * Telegram Bot API
-* Requests
+
+### Frontend
+
+* HTML
+* CSS
+* Jinja2 Templates
 
 ---
+
+## Architecture
+
+```text
+Gold Price API
+        ↓
+USD/INR Exchange Rate
+        ↓
+Price Processing
+        ↓
+SQLite Database
+        ↓
+Historical Analysis
+        ↓
+Gemini AI
+        ↓
+Dashboard + Telegram
+```
 
 ## Project Structure
 
@@ -55,7 +149,8 @@ The project combines data engineering, database management, AI-powered analysis,
 goldpulse-ai/
 │
 ├── data/
-│   └── gold_prices.db
+│   ├── gold_prices.db
+│   └── latest_report.txt
 │
 ├── src/
 │   ├── fetch_price.py
@@ -65,152 +160,81 @@ goldpulse-ai/
 │   ├── alerts.py
 │   └── main.py
 │
-├── .env
+├── web/
+│   ├── app.py
+│   └── templates/
+│       ├── home.html
+│       ├── dashboard.html
+│       ├── history.html
+│       ├── analysis.html
+│       └── about.html
+│
 ├── requirements.txt
-└── README.md
+├── .env
+├── README.md
+└── .gitignore
 ```
-
----
-
-## Architecture
-
-```text
-Gold API
-    ↓
-USD/INR Conversion
-    ↓
-Retail Price Estimation
-    ↓
-SQLite Database
-    ↓
-Pandas Analysis
-    ↓
-Gemini AI
-    ↓
-Telegram Report
-    ↓
-Price Alerts
-```
-
----
 
 ## Installation
 
-### Clone Repository
-
 ```bash
 git clone <repository-url>
+
 cd goldpulse-ai
-```
 
-### Create Environment
-
-```bash
-conda create -n goldpulse python=3.11
-conda activate goldpulse
-```
-
-### Install Dependencies
-
-```bash
 pip install -r requirements.txt
 ```
-
----
 
 ## Environment Variables
 
 Create a `.env` file:
 
 ```env
-GEMINI_API_KEY=your_gemini_api_key
+GEMINI_API_KEY=your_key
 
-TELEGRAM_BOT_TOKEN=your_bot_token
+TELEGRAM_BOT_TOKEN=your_token
 
 TELEGRAM_CHAT_ID=your_chat_id
 ```
 
----
+## Run Dashboard
 
-## Usage
+```bash
+uvicorn web.app:app --reload
+```
 
-Run the application:
+Open:
+
+```text
+http://127.0.0.1:8000
+```
+
+## Run Daily Analysis Pipeline
 
 ```bash
 python src/main.py
 ```
 
-The system will:
+This will:
 
-1. Fetch the latest gold price
-2. Calculate Hyderabad retail estimates
-3. Store data in SQLite
-4. Analyze historical trends
-5. Generate an AI-powered report
-6. Send the report to Telegram
-7. Trigger alerts if price conditions are met
-
----
-
-## Sample Report
-
-```text
-📈 GoldPulse AI
-
-📍 Hyderabad
-
-💵 USD/INR Rate: 95.84
-
-🥇 24K Gold: ₹15,604.51/g
-📊 7-Day Avg: ₹15,480.20/g
-
-💍 22K Gold: ₹14,304.13/g
-📊 7-Day Avg: ₹14,190.18/g
-
-📈 Trend: UP
-
-Market Summary:
-Gold remains above its weekly average, indicating
-continued bullish momentum in the market.
-
-Investor Insight:
-Long-term investors may consider gradual
-accumulation while monitoring short-term
-price fluctuations.
-```
-
----
+1. Fetch gold prices
+2. Update the database
+3. Generate AI analysis
+4. Save latest report
+5. Send Telegram notification
 
 ## Future Improvements
 
-* Real Indian retail gold price integration
+* Gold price prediction
 * Multi-city support
-* Automated scheduling
-* Gold price forecasting
-* Interactive dashboard
-* Web application deployment
-* Multi-user Telegram subscriptions
 * Email notifications
-
----
-
-## Learning Outcomes
-
-This project demonstrates:
-
-* API Integration
-* Database Design
-* Data Engineering
-* AI Application Development
-* LangChain Integration
-* Prompt Engineering
-* Telegram Bot Development
-* End-to-End AI System Design
-
----
+* User accounts
+* Portfolio tracking
+* Mobile application
+* Advanced analytics
 
 ## Author
 
 Sohith Chanumolu
 
-Built as a practical AI engineering project to explore data pipelines, LLM integration, automation, and intelligent reporting systems.
+Built as an end-to-end AI engineering project combining data engineering, automation, AI analysis, and web development.
