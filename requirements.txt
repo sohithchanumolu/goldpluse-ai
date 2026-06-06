@@ -5,3 +5,4 @@ requests
 pandas
 sqlalchemy
 python-telegram-bot
+plotly

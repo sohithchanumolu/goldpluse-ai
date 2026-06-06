@@ -47,3 +47,11 @@ def get_last_n_days(session, n=7):
         .limit(n)
         .all()
     )
+
+def get_last_n_days(session, days):
+    return (
+        session.query(GoldPrice)
+        .order_by(GoldPrice.date.desc())
+        .limit(days)
+        .all()
+    )

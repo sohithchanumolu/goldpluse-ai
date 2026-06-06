@@ -39,6 +39,18 @@ def main():
     summary = get_price_summary()
     report = generate_report()
 
+    report = report.replace("**", "")
+    report = report.strip()
+    while "\n\n\n" in report:
+        report = report.replace("\n\n\n", "\n\n")
+
+    with open(
+        "data/latest_report.txt",
+        "w",
+        encoding="utf-8"
+    ) as file:
+        file.write(report)
+
     telegram_message = f"""
         📈 GoldPulse AI
 

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +17,7 @@
 
     body {
         font-family: Arial, sans-serif;
-        background: #f5f7fa;
+        background: #eef2f7;
         padding: 30px;
     }
 
@@ -42,7 +44,13 @@
         width: 300px;
         padding: 25px;
         border-radius: 15px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     }
 
     .card h2 {
@@ -50,8 +58,9 @@
     }
 
     .price {
-        font-size: 32px;
-        font-weight: bold;
+        font-size: 36px;
+        font-weight: 700;
+        color:#d4a017;
         margin-bottom: 10px;
     }
 
@@ -60,10 +69,12 @@
         color: #555;
     }
 
-    .footer {
-        margin-top: 40px;
-        text-align: center;
-        color: #777;
+    .chart-card {
+        background: white;
+        padding: 25px;
+        margin-top: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     .notice {
@@ -82,6 +93,85 @@
         margin-top: 10px;
         margin-left: 20px;
     }
+
+    .footer {
+        margin-top: 40px;
+        text-align: center;
+        color: #777;
+    }
+
+    .ai-report {
+        background: white;
+        padding: 25px;
+        margin-top: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        line-height: 1.6;
+    }
+
+    .navbar {
+        background: #111827;
+        color: white;
+        padding: 16px 40px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 25px;
+    }
+
+    .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .nav-links a:hover {
+        color: #fbbf24;
+    }
+
+    .report-content {
+        margin-top: 15px;
+        white-space: pre-wrap;
+        line-height: 1.8;
+        font-size: 16px;
+    }
+
+    .up{
+        color: #16a34a;
+        font-weight: 600;
+    }
+
+    .down{
+        color: #dc2626;
+        font-weight: 600;
+    }
+
+    .hero {
+        text-align: center;
+        margin: 40px 0;
+    }
+
+    .hero h1 {
+        font-size: 42px;
+        margin-bottom: 10px;
+    }
+
+    .hero p {
+        color: #666;
+        font-size: 18px;
+    }
 </style>
 ```
 
@@ -89,12 +179,29 @@
 
 <body>
 
-```
-<h1>📈 GoldPulse AI</h1>
+<div class="navbar">
 
-<p class="subtitle">
-    Hyderabad Gold Market Dashboard
-</p>
+    <div class="logo">
+        📈 GoldPulse AI
+    </div>
+
+    <div class="nav-links">
+        <a href="#">Dashboard</a>
+        <a href="#">History</a>
+        <a href="#">Analysis</a>
+        <a href="#">About</a>
+    </div>
+
+</div>
+
+<div class="hero">
+    <h1>Track Gold. Understand Trends.</h1>
+
+    <p>
+        AI-powered gold market insights,
+        price tracking, and historical analysis.
+    </p>
+</div>
 
 <div class="cards">
 
@@ -122,6 +229,37 @@
         </div>
     </div>
 
+    <div class="card">
+        <h2>📊 Records Stored</h2>
+
+        <div class="price">
+            {{ record_count }}
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🕒 Last Updated</h2>
+
+        <div class="trend">
+            {{ last_updated }}
+        </div>
+    </div>
+
+</div>
+
+<div class="chart-card">
+    {{ chart_24k|safe }}
+</div>
+
+<div class="chart-card">
+    {{ chart_22k|safe }}
+</div>
+
+<div class="ai-report">
+    <h2>🤖 AI Market Analysis</h2>
+    <div class="report-content">
+        {{ ai_report }}
+    </div>
 </div>
 
 <div class="notice">
@@ -140,8 +278,8 @@
         <li>Local market conditions</li>
     </ul>
 
-    <p>
-        Actual retail prices may vary.
+    <p style="margin-top:10px;">
+        Actual retail prices may vary from local jeweller rates.
     </p>
 </div>
 

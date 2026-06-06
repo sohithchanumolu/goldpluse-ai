@@ -71,11 +71,23 @@ def generate_report():
 
     Market Trend: {trend}
 
-    Generate:
-    1. Market Summary
-    2. 24K Gold Analysis
-    3. 22K Gold Analysis
-    4. Investor Insight
+    Generate exactly in this format:
+
+    Market Summary:
+    <analysis>
+
+    24K Gold Analysis:
+    <analysis>
+
+    22K Gold Analysis:
+    <analysis>
+
+    Investor Insight:
+    <analysis>
+
+    Do not use markdown.
+    Do not use bullet points.
+    Keep each section 1-2 sentences.
 
     Keep it under 120 words.
     """
