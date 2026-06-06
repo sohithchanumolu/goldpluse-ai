@@ -157,3 +157,29 @@ def history(request:Request):
             "history_data": history_data
         }
     )
+
+@app.get("/analysis")
+def analysis(request: Request):
+
+    with open(
+        "data/latest_report.txt",
+        "r",
+        encoding="utf-8"
+    ) as file:
+        report = file.read()
+
+    return templates.TemplateResponse(
+        request=request,
+        name="analysis.html",
+        context={
+            "report": report
+        }
+    )
+
+@app.get("/about")
+def about(request: Request):
+
+    return templates.TemplateResponse(
+        request=request,
+        name="about.html"
+    )
