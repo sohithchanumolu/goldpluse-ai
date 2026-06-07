@@ -1,16 +1,15 @@
 from langchain_google_genai import data
-from alerts import check_alerts
-import alerts
-from analyzer import generate_report
-from telegram_bot import send_message
+from src.alerts import check_alerts
+from src.analyzer import generate_report
+from src.telegram_bot import send_message
 import asyncio
-from analyzer import generate_report, get_price_summary
-from database import (
+from src.analyzer import generate_report, get_price_summary
+from src.database import (
     init_db,
     SessionLocal,
     GoldPrice
 )
-from fetch_price import get_gold_price
+from src.fetch_price import get_gold_price
 
 
 def main():

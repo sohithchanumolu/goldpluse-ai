@@ -3,9 +3,9 @@ from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 import os
-from fetch_price import get_usd_inr_rate
+from src.fetch_price import get_usd_inr_rate
 
-from database import (
+from src.database import (
     SessionLocal,
     get_last_n_days
 )
