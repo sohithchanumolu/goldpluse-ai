@@ -1,4 +1,5 @@
 import plotly.express as px
+from src.main import main
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 import sys
@@ -206,3 +207,13 @@ def about(request: Request):
         request=request,
         name="about.html"
     )
+
+
+@app.get("/run")
+def run_pipeline():
+    try:
+        main()
+        return {"status": "success"}
+
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
