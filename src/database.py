@@ -10,7 +10,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-DATABASE_URL = os.getenv("postgresql://postgres:XQrWTdLazhYzlXAzsBNGXFpXgUwOSaFc@postgres.railway.internal:5432/railway")
+DATABASE_URL = os.environ["DATABASE_URL"]
 
 engine = create_engine(
     DATABASE_URL,
