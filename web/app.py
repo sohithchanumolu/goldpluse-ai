@@ -217,3 +217,12 @@ def run_pipeline():
 
     except Exception as e:
         return {"status": "error", "message": str(e)}
+    
+@app.get("/debug")
+def debug():
+    session = SessionLocal()
+    prices = get_all_prices(session)
+
+    return {
+        "records": len(prices)
+    }

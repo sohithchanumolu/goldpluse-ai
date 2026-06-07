@@ -5,6 +5,7 @@ from src.telegram_bot import send_message
 import asyncio
 from src.analyzer import generate_report, get_price_summary
 from src.database import (
+    DATABASE_URL,
     init_db,
     SessionLocal,
     GoldPrice
@@ -34,6 +35,7 @@ def main():
         session.add(record)
         session.commit()
         print("Gold price saved successfully")
+        print("Database path:", DATABASE_URL)
     
     summary = get_price_summary()
     report = generate_report()
