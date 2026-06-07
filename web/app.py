@@ -34,6 +34,22 @@ def dashboard(request: Request):
         30
     )
 
+    if not rows:
+        return templates.TemplateResponse(
+            request=request,
+            name="dashboard.html",
+            context={
+                "price_24k": 0,
+                "price_22k": 0,
+                "trend_24k": "No Data",
+                "trend_22k": "No Data",
+                "records_count": 0,
+                "chart_24k": "",
+                "chart_22k": "",
+                "ai_report": "No data available yet. Run the data pipeline first."
+        }
+    )
+
     latest = rows[0]
 
     current_24k = latest.price_24k
