@@ -221,8 +221,17 @@ def run_pipeline():
 @app.get("/debug")
 def debug():
     session = SessionLocal()
+
     prices = get_all_prices(session)
 
     return {
-        "records": len(prices)
+        "records": len(prices),
+        "rows": [
+            {
+                "date": str(p.date),
+                "city": p.city,
+                "price_24k": p.price_24k
+            }
+            for p in prices
+        ]
     }
