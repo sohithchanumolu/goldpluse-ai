@@ -1,90 +1,47 @@
 # GoldPulse AI
 
-## Track Gold. Understand Trends.
+AI-powered gold price intelligence platform that tracks daily gold prices, generates market insights, stores historical data, and sends automated Telegram alerts.
 
-GoldPulse AI is an AI-powered gold market intelligence platform that combines live gold price tracking, historical data analysis, interactive dashboards, and automated AI-generated market insights.
+## Live Demo
 
-The system collects gold market data, stores historical records, analyzes trends using Google Gemini, and presents the results through a modern web dashboard and Telegram notifications.
+Website: https://goldpluse-ai-production.up.railway.app
+
+Telegram Bot: https://t.me/GoldPluse_AI_bot
 
 ---
 
 ## Features
 
-### Live Gold Monitoring
+### Real-Time Gold Price Tracking
 
-* 24K gold price tracking
-* 22K gold price tracking
-* USD/INR exchange rate integration
-* Hyderabad retail price estimation
+* Fetches live international gold prices
+* Converts prices to INR using current USD/INR exchange rates
+* Calculates estimated Hyderabad retail gold prices
+
+### Historical Data Storage
+
+* Stores daily gold prices in PostgreSQL
+* Maintains long-term historical records
+* Enables trend analysis and reporting
 
 ### AI Market Analysis
 
-* Gemini-powered market insights
-* Trend analysis
-* Investor recommendations
-* Automated daily reports
+* Generates daily AI-powered market summaries
+* Provides investor-focused insights
+* Detects bullish and bearish market trends
 
 ### Interactive Dashboard
 
-* Landing page
-* Dashboard page
-* Historical records page
-* AI analysis page
-* About page
+* Current 24K and 22K gold prices
+* Historical trend visualizations
+* AI-generated market reports
+* Last updated timestamp
 
-### Data Visualization
+### Telegram Alerts
 
-* 24K price trend charts
-* 22K price trend charts
-* Daily change tracking
-* Historical data storage
-
-### Notifications
-
-* Telegram alerts
-* Daily gold market reports
-* Price monitoring system
-
----
-
-## Website Pages
-
-### Home
-
-Landing page introducing GoldPulse AI.
-
-### Dashboard
-
-Displays:
-
-* Current 24K gold price
-* Current 22K gold price
-* Trend indicators
-* Historical charts
-* AI market analysis
-
-### History
-
-Displays:
-
-* Historical gold prices
-* Daily price changes
-* Stored records
-
-### Analysis
-
-Displays:
-
-* Latest AI-generated market report
-
-### About
-
-Displays:
-
-* Project overview
-* Technology stack
-* Architecture
-* Roadmap
+* Daily automated reports
+* Gold price notifications
+* Market trend updates
 
 ---
 
@@ -94,110 +51,128 @@ Displays:
 
 * Python
 * FastAPI
+* SQLAlchemy
 
 ### Database
 
-* SQLite
-* SQLAlchemy
-
-### Data Processing
-
-* Pandas
-
-### AI
-
-* Google Gemini
-* LangChain
-
-### Visualization
-
-* Plotly
-
-### Notifications
-
-* Telegram Bot API
+* PostgreSQL
 
 ### Frontend
 
 * HTML
 * CSS
 * Jinja2 Templates
+* Plotly
+
+### AI
+
+* Google Gemini
+
+### Deployment
+
+* Railway
+
+### Notifications
+
+* Telegram Bot API
 
 ---
 
-## Architecture
-
+## Project Architecture
+<p align="center">
+  <img src="assets/architecture.png" width="900">
+</p>
 ```text
-Gold Price API
-        ↓
-USD/INR Exchange Rate
-        ↓
-Price Processing
-        ↓
-SQLite Database
-        ↓
-Historical Analysis
-        ↓
-Gemini AI
-        ↓
-Dashboard + Telegram
+Gold API
+    │
+    ▼
+Data Collection Pipeline
+    │
+    ▼
+PostgreSQL Database
+    │
+    ▼
+AI Analysis (Gemini)
+    │
+    ├── Website Dashboard
+    │
+    └── Telegram Alerts
 ```
 
-## Project Structure
+---
 
-```text
-goldpulse-ai/
-│
-├── data/
-│   ├── gold_prices.db
-│   └── latest_report.txt
-│
-├── src/
-│   ├── fetch_price.py
-│   ├── database.py
-│   ├── analyzer.py
-│   ├── telegram_bot.py
-│   ├── alerts.py
-│   └── main.py
-│
-├── web/
-│   ├── app.py
-│   └── templates/
-│       ├── home.html
-│       ├── dashboard.html
-│       ├── history.html
-│       ├── analysis.html
-│       └── about.html
-│
-├── requirements.txt
-├── .env
-├── README.md
-└── .gitignore
-```
+## Pages
+
+### Home
+<p align="center">
+  <img src="assets/home.png" width="900">
+</p>
+Landing page introducing GoldPulse AI.
+
+### Dashboard
+<p align="center">
+  <img src="assets/dashboard.png" width="900">
+</p>
+Displays:
+
+* Current 24K Gold Price
+* Current 22K Gold Price
+* Trend Analysis
+* Historical Charts
+* AI Market Report
+
+### History
+<p align="center">
+  <img src="assets/history.png" width="900">
+</p>
+Displays complete historical gold price records.
+
+### Analysis
+<p align="center">
+  <img src="assets/analysis.png" width="900">
+</p>
+Shows detailed AI-generated market insights.
+
+### About
+
+Project overview and objectives.
+
+---
 
 ## Installation
 
+### Clone Repository
+
 ```bash
-git clone <repository-url>
+git clone https://github.com/sohithchanumolu/goldpluse-ai.git
+cd goldpluse-ai
+```
 
-cd goldpulse-ai
+### Create Environment
 
+```bash
+conda create -n goldpulse python=3.13
+conda activate goldpulse
+```
+
+### Install Dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-## Environment Variables
+### Configure Environment Variables
 
 Create a `.env` file:
 
 ```env
-GEMINI_API_KEY=your_key
-
-TELEGRAM_BOT_TOKEN=your_token
-
+DATABASE_URL=your_postgresql_url
+GEMINI_API_KEY=your_gemini_api_key
+TELEGRAM_BOT_TOKEN=your_bot_token
 TELEGRAM_CHAT_ID=your_chat_id
 ```
 
-## Run Dashboard
+### Run Application
 
 ```bash
 uvicorn web.app:app --reload
@@ -209,32 +184,44 @@ Open:
 http://127.0.0.1:8000
 ```
 
-## Run Daily Analysis Pipeline
+---
+
+## Automated Data Pipeline
+
+Run manually:
 
 ```bash
-python src/main.py
+python -m src.main
 ```
 
-This will:
+Or trigger:
 
-1. Fetch gold prices
-2. Update the database
-3. Generate AI analysis
-4. Save latest report
-5. Send Telegram notification
+```text
+https://goldpluse-ai-production.up.railway.app/run
+```
+
+---
 
 ## Future Improvements
 
-* Gold price prediction
-* Multi-city support
-* Email notifications
-* User accounts
-* Portfolio tracking
+* Gold price forecasting
+* User authentication
+* Personalized watchlists
 * Mobile application
-* Advanced analytics
+* Advanced analytics dashboard
+* Multi-city gold tracking
+
+---
 
 ## Author
 
 Sohith Chanumolu
 
-Built as an end-to-end AI engineering project combining data engineering, automation, AI analysis, and web development.
+Built as an end-to-end AI and Data Engineering project combining:
+
+* FastAPI
+* PostgreSQL
+* AI Analysis
+* Data Pipelines
+* Cloud Deployment
+* Telegram Automation
