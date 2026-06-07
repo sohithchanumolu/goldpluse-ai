@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 from sqlalchemy import desc
 from sqlalchemy import String
 import os
@@ -9,6 +10,7 @@ from sqlalchemy import (
     Date
 )
 from sqlalchemy.orm import declarative_base, sessionmaker
+load_dotenv()
 
 DATABASE_URL = os.environ["DATABASE_URL"]
 
