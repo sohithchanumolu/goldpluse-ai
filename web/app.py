@@ -81,7 +81,7 @@ def dashboard(request: Request):
     chart_rows = list(reversed(rows))
 
     dates = [
-        row.date
+        row.date.strftime("%Y-%m-%d")
         for row in chart_rows
     ]
 
@@ -217,21 +217,3 @@ def run_pipeline():
 
     except Exception as e:
         return {"status": "error", "message": str(e)}
-    
-@app.get("/debug")
-def debug():
-    session = SessionLocal()
-
-    prices = get_all_prices(session)
-
-    return {
-        "records": len(prices),
-        "rows": [
-            {
-                "date": str(p.date),
-                "city": p.city,
-                "price_24k": p.price_24k
-            }
-            for p in prices
-        ]
-    }
