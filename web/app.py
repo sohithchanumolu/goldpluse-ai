@@ -81,7 +81,7 @@ def dashboard(request: Request):
     chart_rows = list(reversed(rows))
 
     dates = [
-        row.date.strftime("%Y-%m-%d")
+        row.date.strftime("%d %b")
         for row in chart_rows
     ]
 
@@ -108,6 +108,10 @@ def dashboard(request: Request):
         template="plotly_white"
     )
 
+    fig_24k.update_xaxes(
+        type="category"
+    )
+
     chart_24k = fig_24k.to_html(
         full_html=False
     )
@@ -123,6 +127,10 @@ def dashboard(request: Request):
         xaxis_title="Date",
         yaxis_title="Price (₹)",
         template="plotly_white"
+    )
+
+    fig_22k.update_xaxes(
+        type="category"
     )
 
     chart_22k = fig_22k.to_html(
