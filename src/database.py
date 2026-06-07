@@ -35,28 +35,10 @@ class GoldPrice(Base):
     price_24k = Column(Float, nullable=False)
     price_22k = Column(Float, nullable=False)
 
-class GoldPrice(Base):
-    __tablename__ = "gold_prices"
-
-    id = Column(Integer, primary_key=True)
-    date = Column(Date, unique=True, nullable=False)
-    city = Column(String, nullable=False)
-    price_24k = Column(Float, nullable=False)
-    price_22k = Column(Float, nullable=False)
-
 Base.metadata.create_all(bind=engine)
 
 def init_db():
     Base.metadata.create_all(bind=engine)
-
-
-def get_last_n_days(session, n=7):
-    return (
-        session.query(GoldPrice)
-        .order_by(desc(GoldPrice.date))
-        .limit(n)
-        .all()
-    )
 
 def get_last_n_days(session, days):
     return (
