@@ -1,6 +1,6 @@
 from sqlalchemy import desc
 from sqlalchemy import String
-
+import os
 from sqlalchemy import (
     create_engine,
     Column,
@@ -10,11 +10,12 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-DATABASE_URL = "sqlite:///data/gold_prices.db"
+DATABASE_URL = os.getenv("postgresql://postgres:XQrWTdLazhYzlXAzsBNGXFpXgUwOSaFc@postgres.railway.internal:5432/railway")
 
 engine = create_engine(
     DATABASE_URL,
-    echo=False
+    echo=False,
+    pool_pre_ping=True
 )
 
 SessionLocal = sessionmaker(
