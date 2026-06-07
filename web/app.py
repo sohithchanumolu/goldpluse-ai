@@ -128,12 +128,12 @@ def dashboard(request: Request):
         full_html=False
     )
 
-    with open(
-        "data/latest_report.txt",
-        "r",
-        encoding="utf-8"
-    ) as file:
-        ai_report = file.read()
+    report_file = Path("data/latest_report.txt")
+    if report_file.exists():
+        with open(report_file, "r", encoding="utf-8") as file:
+            ai_report = file.read()
+    else:
+        ai_report = "No AI report generated yet."
 
     return templates.TemplateResponse(
         request=request,
