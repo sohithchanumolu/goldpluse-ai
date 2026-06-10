@@ -1,80 +1,33 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>GoldPulse Analysis</title>
-    <style>
+{% extends "base.html" %}
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #eef2f7;
-            padding: 30px;
-        }
+{% block content %}
 
-        .navbar {
-            background: #111827;
-            color: white;
-            padding: 16px 40px;
-            border-radius: 12px;
-            margin-bottom: 30px;
+<style>
 
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.report-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
+.report-content {
+    margin-top: 20px;
+    white-space: pre-wrap;
+    line-height: 1.8;
+    font-size: 16px;
+}
 
-        .nav-links {
-            display: flex;
-            gap: 25px;
-        }
+</style>
 
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-        }
+<div class="report-card">
 
-        .report-card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
+    <h1>🤖 AI Market Analysis</h1>
 
-        .report-content {
-            margin-top: 20px;
-            white-space: pre-wrap;
-            line-height: 1.8;
-        }
-
-    </style>
-</head>
-<body>
-    <div class="navbar">
-        <div class="logo">
-            📈 GoldPulse AI
-        </div>
-
-        <div class="nav-links">
-            <a href="/">Dashboard</a>
-            <a href="/history">History</a>
-            <a href="/analysis">Analysis</a>
-            <a href="/about">About</a>
-        </div>
-
+    <div class="report-content">
+        {{ report }}
     </div>
 
-    <div class="report-card">
+</div>
 
-        <h1>🤖 AI Market Analysis</h1>
-
-        <div class="report-content">
-{{ report }}
-        </div>
-
-    </div>
-</body>
-</html>
+{% endblock %}

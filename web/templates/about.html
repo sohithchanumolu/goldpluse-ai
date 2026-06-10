@@ -1,203 +1,158 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>About GoldPulse AI</title>
-    <style>
+{% extends "base.html" %}
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #eef2f7;
-            padding: 30px;
-        }
+{% block content %}
 
-        .container {
-            max-width: 1000px;
-            margin: auto;
-        }
+<style>
 
-        .section {
-            background: white;
-            padding: 25px;
-            margin-bottom: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
+.container {
+    max-width: 1000px;
+    margin: auto;
+}
 
-        h1 {
-            margin-bottom: 20px;
-        }
+.section {
+    background: white;
+    padding: 25px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
 
-        h2 {
-            margin-bottom: 15px;
-            color: #111827;
-        }
+h1 {
+    margin-bottom: 20px;
+}
 
-        p {
-            line-height: 1.8;
-            color: #444;
-        }
+h2 {
+    margin-bottom: 15px;
+    color: #111827;
+}
 
-        ul {
-            margin-left: 20px;
-            line-height: 1.8;
-        }
+p {
+    line-height: 1.8;
+    color: #444;
+}
 
-        .navbar {
-            background: #111827;
-            color: white;
-            padding: 16px 40px;
-            border-radius: 12px;
-            margin-bottom: 30px;
+ul {
+    margin-left: 20px;
+    line-height: 1.8;
+}
 
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+</style>
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
+<div class="container">
 
-        .nav-links {
-            display: flex;
-            gap: 25px;
-        }   
+    <div class="section">
 
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-        }
+        <h1>📈 GoldPulse AI</h1>
 
-        .nav-links a:hover {
-            color: #fbbf24;
-        }
-    </style>
-</head>
-<body>
-    <div class="navbar">
-
-        <div class="logo">
-            📈 GoldPulse AI
-        </div>
-
-        <div class="nav-links">
-            <a href="/">Dashboard</a>
-            <a href="/history">History</a>
-            <a href="/analysis">Analysis</a>
-            <a href="/about">About</a>
-        </div>
-    </div>
-
-    <div class="container">
-
-        <div class="section">
-
-            <h1>📈 GoldPulse AI</h1>
-
-            <p>
-                GoldPulse AI is an AI-powered gold market intelligence platform
-                designed for Indian investors and jewellery buyers.
-                It combines real-time gold pricing, historical tracking,
-                automated analysis, and AI-generated market insights into a
-                single dashboard.
-            </p>
-
-        </div>
-
-        <div class="section">
-
-            <h2>🚀 Features</h2>
-
-            <ul>
-                <li>Daily 24K and 22K gold price tracking</li>
-                <li>USD/INR exchange rate integration</li>
-                <li>Historical gold price database</li>
-                <li>Interactive trend charts</li>
-                <li>AI-generated market analysis</li>
-                <li>Telegram notifications and alerts</li>
-                <li>FastAPI-powered dashboard</li>
-            </ul>
-
-        </div>
-
-        <div class="section">
-
-            <h2>⚙️ Technology Stack</h2>
-
-            <ul>
-                <li>Python</li>
-                <li>FastAPI</li>
-                <li>SQLAlchemy</li>
-                <li>SQLite</li>
-                <li>Plotly</li>
-                <li>Google Gemini</li>
-                <li>Telegram Bot API</li>
-                <li>HTML & CSS</li>
-            </ul>
-
-        </div>
-
-        <div class="section">
-
-            <h2>🏗️ System Architecture</h2>
-
-            <p>
-
-                Gold Price API
-                → Data Collection
-
-                <br><br>
-
-                Data Collection
-                → SQLite Database
-
-                <br><br>
-
-                Database
-                → Dashboard + History
-
-                <br><br>
-
-                Gemini AI
-                → Market Analysis
-
-                <br><br>
-
-                Analysis
-                → Website + Telegram Alerts
-
-            </p>
-
-        </div>
-
-        <div class="section">
-
-            <h2>🛣️ Roadmap</h2>
-
-            <ul>
-                <li>Price prediction models</li>
-                <li>Email alerts</li>
-                <li>User accounts</li>
-                <li>Portfolio tracking</li>
-                <li>Mobile application</li>
-                <li>Advanced analytics</li>
-            </ul>
-
-        </div>
-
-        <div class="section">
-
-            <h2>👨‍💻 Developer</h2>
-
-            <p>
-                Built as an end-to-end AI and data engineering project using
-                FastAPI, Gemini, Plotly, SQLAlchemy, and Telegram automation.
-            </p>
-
-        </div>
+        <p>
+            GoldPulse AI is an AI-powered gold market intelligence platform
+            designed for Indian investors and jewellery buyers.
+            It combines real-time gold pricing, historical tracking,
+            automated analysis, and AI-generated market insights into a
+            single dashboard.
+        </p>
 
     </div>
-</body>
-</html>
+
+    <div class="section">
+
+        <h2>🚀 Features</h2>
+
+        <ul>
+            <li>Daily 24K and 22K gold price tracking</li>
+            <li>USD/INR exchange rate integration</li>
+            <li>Historical gold price database</li>
+            <li>Interactive trend charts</li>
+            <li>AI-generated market analysis</li>
+            <li>Telegram notifications and alerts</li>
+            <li>FastAPI-powered dashboard</li>
+            <li>Ask GoldPulse AI Assistant</li>
+        </ul>
+
+    </div>
+
+    <div class="section">
+
+        <h2>⚙️ Technology Stack</h2>
+
+        <ul>
+            <li>Python</li>
+            <li>FastAPI</li>
+            <li>SQLAlchemy</li>
+            <li>PostgreSQL</li>
+            <li>Plotly</li>
+            <li>Google Gemini</li>
+            <li>Telegram Bot API</li>
+            <li>HTML & CSS</li>
+            <li>Railway</li>
+        </ul>
+
+    </div>
+
+    <div class="section">
+
+        <h2>🏗️ System Architecture</h2>
+
+        <p>
+
+            Gold Price API
+            → Data Collection
+
+            <br><br>
+
+            Data Collection
+            → PostgreSQL Database
+
+            <br><br>
+
+            Database
+            → Dashboard + History
+
+            <br><br>
+
+            Gemini AI
+            → Market Analysis
+
+            <br><br>
+
+            Ask GoldPulse
+            → AI Assistant
+
+            <br><br>
+
+            Analysis
+            → Website + Telegram Alerts
+
+        </p>
+
+    </div>
+
+    <div class="section">
+
+        <h2>🛣️ Roadmap</h2>
+
+        <ul>
+            <li>Price prediction models</li>
+            <li>Gold market sentiment analysis</li>
+            <li>RAG-powered AI assistant</li>
+            <li>Portfolio tracking</li>
+            <li>Email alerts</li>
+            <li>Mobile application</li>
+        </ul>
+
+    </div>
+
+    <div class="section">
+
+        <h2>👨‍💻 Developer</h2>
+
+        <p>
+            Built as an end-to-end AI and data engineering project using
+            FastAPI, PostgreSQL, Gemini AI, Plotly, and Telegram automation.
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

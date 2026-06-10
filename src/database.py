@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from sqlalchemy import desc
 from sqlalchemy import String
+from datetime import datetime
 import os
 from sqlalchemy import (
     create_engine,
@@ -37,6 +38,30 @@ class GoldPrice(Base):
     city = Column(String, nullable=False)
     price_24k = Column(Float, nullable=False)
     price_22k = Column(Float, nullable=False)
+
+class QuestionLog(Base):
+    __tablename__ = "question_logs"
+
+    id = Column(
+        Integer,
+        primary_key=True
+    )
+
+    question = Column(
+        String,
+        nullable=False
+    )
+
+    answer = Column(
+        String,
+        nullable=False
+    )
+
+    created_at = Column(
+        Date,
+        nullable=False,
+        default=datetime.utcnow
+    )
 
 Base.metadata.create_all(bind=engine)
 

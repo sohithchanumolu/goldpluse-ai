@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+.container{
+    width:95%;
+    max-width:1400px;
+    margin:auto;
+}
+
+.ask-card{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.form-row{
+    display:flex;
+    gap:10px;
+}
+
+.form-row input{
+    flex:1;
+    padding:14px;
+    border-radius:10px;
+    border:1px solid #ddd;
+    font-size:16px;
+}
+
+.form-row button{
+    width:100px;
+}
+
+button{
+    padding:14px 20px;
+    background:#111827;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+.layout{
+    display:grid;
+    grid-template-columns:280px 1fr;
+    gap:20px;
+    margin-top:20px;
+    align-items:start;
+}
+
+.suggestions{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top:15px;
+}
+
+.tag{
+    padding:12px;
+    background:#f3f4f6;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.tag:hover{
+    background:#e5e7eb;
+}
+
+.answer{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+    white-space:pre-wrap;
+    line-height:1.8;
+}
+
+.question-box{
+    background:#f8fafc;
+    border-left:4px solid #d4a017;
+    padding:15px;
+    border-radius:10px;
+    margin:10px 0 20px 0;
+    font-weight:500;
+}
+
+.answer-title{
+    margin-top:15px;
+    margin-bottom:10px;
+}
+
+hr{
+    border:none;
+    border-top:1px solid #e5e7eb;
+    margin:20px 0;
+}
+
+</style>
+
+<div class="container">
+
+    <div class="ask-card">
+
+        <h1>🤖 Ask GoldPulse AI</h1>
+
+        <br>
+
+        <form method="post">
+
+            <div class="form-row">
+
+                <input
+                    id="question-input"
+                    type="text"
+                    name="question"
+                    placeholder="Should I buy gold now?"
+                    required
+                >
+
+                <button type="submit">
+                    Ask
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <div class="layout">
+
+        <div class="ask-card">
+
+            <h3>Suggested Questions</h3>
+
+            <div class="suggestions">
+
+                <div class="tag" onclick="setQuestion('Should I buy gold now?')">
+                    Should I buy gold now?
+                </div>
+
+                <div class="tag" onclick="setQuestion('What is the current trend?')">
+                    What is the current trend?
+                </div>
+
+                <div class="tag" onclick="setQuestion('Summarize recent gold activity')">
+                    Summarize recent gold activity
+                </div>
+
+                <div class="tag" onclick="setQuestion('Why is gold rising?')">
+                    Why is gold rising?
+                </div>
+
+            </div>
+
+        </div>
+
+        {% if answer %}
+
+        <div class="answer">
+
+            <h3>👤 You</h3>
+
+            <div class="question-box">
+                {{ question }}
+            </div>
+
+            <hr>
+
+            <h3 class="answer-title">🤖 GoldPulse AI</h3>
+
+            <div>
+                {{ answer }}
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div class="answer">
+
+            <h3>🤖 GoldPulse AI</h3>
+
+            <p>
+                Ask a question about gold prices,
+                market trends, investment insights,
+                historical performance, buying opportunities,
+                or market outlook.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<script>
+function setQuestion(question) {
+    document.getElementById(
+        "question-input"
+    ).value = question;
+
+    document.getElementById(
+        "question-input"
+    ).focus();
+}
+</script>
+
+{% endblock %}

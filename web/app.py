@@ -1,4 +1,6 @@
 import plotly.express as px
+from fastapi import Form
+from src.gold_assistant import ask_goldpulse
 from src.main import main
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
@@ -208,6 +210,37 @@ def analysis(request: Request):
         }
     )
 
+@app.get("/ask")
+def ask_page(request: Request):
+
+    return templates.TemplateResponse(
+        request=request,
+        name="ask.html",
+        context={
+            "answer": None
+        }
+    )
+
+
+@app.post("/ask")
+def ask_submit(
+    request: Request,
+    question: str = Form(...)
+):
+
+    answer = ask_goldpulse(
+        question
+    )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="ask.html",
+        context={
+            "question": question,
+            "answer": answer
+        }
+    )
+
 @app.get("/about")
 def about(request: Request):
 
@@ -225,3 +258,4 @@ def run_pipeline():
 
     except Exception as e:
         return {"status": "error", "message": str(e)}
+

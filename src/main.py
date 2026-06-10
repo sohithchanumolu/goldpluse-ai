@@ -51,6 +51,17 @@ def main():
         encoding="utf-8"
     ) as file:
         file.write(report)
+    
+    with open(
+        "data/report_history.txt",
+        "a",
+        encoding="utf-8"
+    ) as file:
+        file.write(
+            f"\n\n=== {data['date']} ===\n"
+        )
+
+    file.write(report)
 
     telegram_message = f"""
         📈 GoldPulse AI

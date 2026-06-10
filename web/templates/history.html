@@ -1,129 +1,86 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>GoldPulse History</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 30px;
-            background: #eef2f7;
-        }
+{% extends "base.html" %}
 
-        h1 {
-            margin-bottom: 20px;
-        }
+{% block content %}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
+<style>
 
-        th,
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #ddd;
-            text-align: center;
-        }
+h1 {
+    margin-bottom: 20px;
+}
 
-        th {
-            background: #111827;
-            color: white;
-        }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
 
-        tr:hover {
-            background: #f8fafc;
-        }
+th,
+td {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
 
-        .navbar {
-            background: #111827;
-            color: white;
-            padding: 16px 40px;
-            border-radius: 12px;
-            margin-bottom: 30px;
+th {
+    background: #111827;
+    color: white;
+}
 
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+tr:hover {
+    background: #f8fafc;
+}
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
+</style>
 
-        .nav-links {
-            display: flex;
-            gap: 25px;
-        }
+<h1>📊 Gold Price History</h1>
 
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-        }
+<table>
 
-        .nav-links a:hover {
-            color: #fbbf24;
-        }
+    <tr>
+        <th>Date</th>
+        <th>City</th>
+        <th>24K Gold</th>
+        <th>22K Gold</th>
+        <th>Daily Change</th>
+    </tr>
 
-    </style>
-</head>
-<body>
-    <div class="navbar">
+    {% for row in history_data %}
 
-        <div class="logo">
-            📈 GoldPulse AI
-        </div>
+    <tr>
+        <td>{{ row.date }}</td>
+        <td>{{ row.city }}</td>
+        <td>₹{{ row.price_24k }}</td>
+        <td>₹{{ row.price_22k }}</td>
 
-        <div class="nav-links">
-            <a href="/">Dashboard</a>
-            <a href="/history">History</a>
-            <a href="/analysis">Analysis</a>
-            <a href="/about">About</a>
-        </div>
+        <td>
 
-    </div>
+        {% if row.daily_change > 0 %}
 
-    <h1>📊 Gold Price History</h1>
+            <span style="color:green;">
+                +₹{{ "%.2f"|format(row.daily_change) }}
+            </span>
 
-    <table>
+        {% elif row.daily_change < 0 %}
 
-        <tr>
-            <th>Date</th>
-            <th>City</th>
-            <th>24K Gold</th>
-            <th>22K Gold</th>
-            <th>Daily Change</th>
-        </tr>
+            <span style="color:red;">
+                ₹{{ "%.2f"|format(row.daily_change) }}
+            </span>
 
-        {% for row in history_data %}
+        {% else %}
 
-        <tr>
-            <td>{{ row.date }}</td>
-            <td>{{ row.city }}</td>
-            <td>₹{{ row.price_24k }}</td>
-            <td>₹{{ row.price_22k }}</td>
-            <td>
-            {% if row.daily_change > 0 %}
-                <span style="color:green;">
-                    +₹{{ "%.2f"|format(row.daily_change) }}
-                </span>
+            -
 
-            {% elif row.daily_change < 0 %}
-                <span style="color:red;">
-                    ₹{{ "%.2f"|format(row.daily_change) }}
-                </span>
+        {% endif %}
 
-            {% else %}
-                -
-            {% endif %}
+        </td>
 
-            </td>
-        </tr>
+    </tr>
 
-        {% endfor %}
+    {% endfor %}
 
-    </table>
-</body>
-</html>
+</table>
+
+{% endblock %}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GoldPulse AI</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:Arial,sans-serif;
+            background:#eef2f7;
+            padding:30px;
+        }
+
+        .navbar{
+            background:#111827;
+            color:white;
+            padding:16px 40px;
+            border-radius:12px;
+            margin-bottom:30px;
+
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .logo{
+            font-size:24px;
+            font-weight:bold;
+        }
+
+        .nav-links{
+            display:flex;
+            gap:25px;
+        }
+
+        .nav-links a{
+            color:white;
+            text-decoration:none;
+            font-weight:500;
+        }
+
+        .nav-links a:hover{
+            color:#fbbf24;
+        }
+
+        .footer{
+            margin-top:40px;
+            text-align:center;
+            color:#777;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+    <div class="logo">
+        📈 GoldPulse AI
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/">Home</a>
+
+        <a href="/dashboard">
+            Dashboard
+        </a>
+
+        <a href="/history">
+            History
+        </a>
+
+        <a href="/analysis">
+            Analysis
+        </a>
+
+        <a href="/ask">
+            Ask GoldPulse
+        </a>
+
+        <a href="/about">
+            About
+        </a>
+
+    </div>
+
+</div>
+
+{% block content %}
+{% endblock %}
+
+<div class="footer">
+    Powered by GoldPulse AI
+</div>
+
+</body>
+</html>

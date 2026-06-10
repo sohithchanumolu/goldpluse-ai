@@ -1,196 +1,108 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GoldPulse AI</title>
+{% block content %}
 
 <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
 
-    body {
-        font-family: Arial, sans-serif;
-        background: #eef2f7;
-        padding: 30px;
-    }
+h1 {
+    text-align: center;
+    margin-bottom: 10px;
+}
 
-    h1 {
-        text-align: center;
-        margin-bottom: 10px;
-    }
+.cards {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
 
-    .subtitle {
-        text-align: center;
-        color: #666;
-        margin-bottom: 40px;
-    }
+.card {
+    background: white;
+    width: 300px;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
 
-    .cards {
-        display: flex;
-        gap: 20px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
 
-    .card {
-        background: white;
-        width: 300px;
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s ease;
-    }
+.card h2 {
+    margin-bottom: 15px;
+}
 
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    }
+.price {
+    font-size: 36px;
+    font-weight: 700;
+    color:#d4a017;
+    margin-bottom: 10px;
+}
 
-    .card h2 {
-        margin-bottom: 15px;
-    }
+.trend {
+    font-size: 18px;
+    color: #555;
+}
 
-    .price {
-        font-size: 36px;
-        font-weight: 700;
-        color:#d4a017;
-        margin-bottom: 10px;
-    }
+.chart-card {
+    background: white;
+    padding: 25px;
+    margin-top: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
 
-    .trend {
-        font-size: 18px;
-        color: #555;
-    }
+.notice {
+    background: #fff8e1;
+    border-left: 5px solid #f4b400;
+    padding: 20px;
+    margin-top: 30px;
+    border-radius: 10px;
+}
 
-    .chart-card {
-        background: white;
-        padding: 25px;
-        margin-top: 30px;
-        border-radius: 15px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    }
+.notice h3 {
+    margin-bottom: 10px;
+}
 
-    .notice {
-        background: #fff8e1;
-        border-left: 5px solid #f4b400;
-        padding: 20px;
-        margin-top: 30px;
-        border-radius: 10px;
-    }
+.notice ul {
+    margin-top: 10px;
+    margin-left: 20px;
+}
 
-    .notice h3 {
-        margin-bottom: 10px;
-    }
+.ai-report {
+    background: white;
+    padding: 25px;
+    margin-top: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    line-height: 1.6;
+}
 
-    .notice ul {
-        margin-top: 10px;
-        margin-left: 20px;
-    }
+.report-content {
+    margin-top: 15px;
+    white-space: pre-wrap;
+    line-height: 1.8;
+    font-size: 16px;
+}
 
-    .footer {
-        margin-top: 40px;
-        text-align: center;
-        color: #777;
-    }
+.hero {
+    text-align: center;
+    margin: 40px 0;
+}
 
-    .ai-report {
-        background: white;
-        padding: 25px;
-        margin-top: 30px;
-        border-radius: 15px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        line-height: 1.6;
-    }
+.hero h1 {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
 
-    .navbar {
-        background: #111827;
-        color: white;
-        padding: 16px 40px;
-        border-radius: 12px;
-        margin-bottom: 30px;
+.hero p {
+    color: #666;
+    font-size: 18px;
+}
 
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .logo {
-        font-size: 24px;
-        font-weight: bold;
-    }
-
-    .nav-links {
-        display: flex;
-        gap: 25px;
-    }
-
-    .nav-links a {
-        color: white;
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-    .nav-links a:hover {
-        color: #fbbf24;
-    }
-
-    .report-content {
-        margin-top: 15px;
-        white-space: pre-wrap;
-        line-height: 1.8;
-        font-size: 16px;
-    }
-
-    .up{
-        color: #16a34a;
-        font-weight: 600;
-    }
-
-    .down{
-        color: #dc2626;
-        font-weight: 600;
-    }
-
-    .hero {
-        text-align: center;
-        margin: 40px 0;
-    }
-
-    .hero h1 {
-        font-size: 42px;
-        margin-bottom: 10px;
-    }
-
-    .hero p {
-        color: #666;
-        font-size: 18px;
-    }
 </style>
-
-</head>
-
-<body>
-
-<div class="navbar">
-
-    <div class="logo">
-        📈 GoldPulse AI
-    </div>
-
-    <div class="nav-links">
-        <a href="/">Dashboard</a>
-        <a href="/history">History</a>
-        <a href="/analysis">Analysis</a>
-        <a href="/about">About</a>
-    </div>
-
-</div>
 
 <div class="hero">
     <h1>Track Gold. Understand Trends.</h1>
@@ -255,12 +167,14 @@
 
 <div class="ai-report">
     <h2>🤖 AI Market Analysis</h2>
+
     <div class="report-content">
         {{ ai_report }}
     </div>
 </div>
 
 <div class="notice">
+
     <h3>⚠️ Price Estimate Notice</h3>
 
     <p>
@@ -279,13 +193,7 @@
     <p style="margin-top:10px;">
         Actual retail prices may vary from local jeweller rates.
     </p>
+
 </div>
 
-<div class="footer">
-    Powered by GoldPulse AI
-</div>
-```
-
-</body>
-
-</html>
+{% endblock %}
