@@ -35,7 +35,7 @@ def main():
         session.add(record)
         session.commit()
         print("Gold price saved successfully")
-        print("Database path:", DATABASE_URL)
+        print("Database connected successfully")
     
     summary = get_price_summary()
     report = generate_report()
