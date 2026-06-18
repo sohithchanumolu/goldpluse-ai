@@ -1,8 +1,10 @@
+import uuid
+import json
 import plotly.express as px
-from fastapi import Form
 from src.gold_assistant import ask_goldpulse
 from src.main import main
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response, Cookie, Form
+from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 import sys
 from pathlib import Path
@@ -12,7 +14,9 @@ sys.path.append(
 from src.database import(
     SessionLocal,
     get_last_n_days,
-    get_all_prices
+    get_all_prices,
+    get_session_history,
+    clear_session_history
 )
 
 app = FastAPI()
@@ -194,52 +198,110 @@ def history(request:Request):
 
 @app.get("/analysis")
 def analysis(request: Request):
-
-    with open(
-        "data/latest_report.txt",
-        "r",
-        encoding="utf-8"
-    ) as file:
-        report = file.read()
+    from pathlib import Path
+    report_file = Path("data/latest_report.txt")
+    
+    if report_file.exists():
+        with open(report_file, "r", encoding="utf-8") as file:
+            report = file.read()
+    else:
+        report = "No AI report generated yet. Run the data pipeline first."
 
     return templates.TemplateResponse(
         request=request,
         name="analysis.html",
-        context={
-            "report": report
-        }
+        context={"report": report}
     )
 
 @app.get("/ask")
-def ask_page(request: Request):
+def ask_page(request: Request, session_id: str = Cookie(None)):
+    session = SessionLocal()
+    history_records = get_session_history(session, session_id)
+    
+    # Parse previous answers from stringified JSON back to objects for rendering
+    parsed_history = []
+    for record in history_records:
+        try:
+            parsed_history.append({
+                "question": record.question,
+                "parsed_answer": json.loads(record.answer)
+            })
+        except:
+            parsed_history.append({
+                "question": record.question,
+                "parsed_answer": {"error": record.answer}
+            })
 
-    return templates.TemplateResponse(
+    response = templates.TemplateResponse(
         request=request,
         name="ask.html",
         context={
-            "answer": None
+            "answer": None,
+            "chat_history": parsed_history
         }
     )
+    
+    # If the user has no session cookie, issue a fresh one
+    if not session_id:
+        new_session_id = str(uuid.uuid4())
+        response.set_cookie(key="session_id", value=new_session_id, httponly=True)
+    
+    return response
 
 
 @app.post("/ask")
-def ask_submit(
-    request: Request,
-    question: str = Form(...)
-):
+def ask_submit(request: Request, response: Response, question: str = Form(...), session_id: str = Cookie(None)):
+    # Safeguard if cookies are somehow missing on form submission
+    if not session_id:
+        session_id = str(uuid.uuid4())
+        response.set_cookie(key="session_id", value=session_id, httponly=True)
+        
+    # Generate the contextual memory answer
+    answer = ask_goldpulse(question, session_id=session_id)
+    
+    session = SessionLocal()
+    history_records = get_session_history(session, session_id)
+    
+    parsed_history = []
+    for record in history_records:
+        try:
+            parsed_history.append({
+                "question": record.question,
+                "parsed_answer": json.loads(record.answer)
+            })
+        except:
+            parsed_history.append({
+                "question": record.question,
+                "parsed_answer": {"error": record.answer}
+            })
 
-    answer = ask_goldpulse(
-        question
-    )
-
-    return templates.TemplateResponse(
+    # Create the response object
+    response = templates.TemplateResponse(
         request=request,
         name="ask.html",
         context={
             "question": question,
-            "answer": answer
+            "answer": answer,
+            "chat_history": parsed_history
         }
     )
+    
+    # FIX: Attach the cookie directly to the TemplateResponse so it saves to the browser
+    response.set_cookie(key="session_id", value=session_id, httponly=True)
+    
+    return response
+
+
+@app.post("/ask/clear")
+def ask_clear(response: Response, session_id: str = Cookie(None)):
+    if session_id:
+        session = SessionLocal()
+        try:
+            clear_session_history(session, session_id)
+        finally:
+            session.close()
+    return RedirectResponse(url="/ask", status_code=303)
+
 
 @app.get("/about")
 def about(request: Request):

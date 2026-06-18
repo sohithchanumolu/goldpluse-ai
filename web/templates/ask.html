@@ -1,219 +1,463 @@
 {% extends "base.html" %}
 
 {% block content %}
-
 <style>
+    /* New Layout Wrapper for Sidebar + Workspace */
+    .ask-wrapper {
+        max-width: 1400px;
+        margin: 20px auto;
+        padding: 0 20px;
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 25px;
+        align-items: start;
+    }
 
-.container{
-    width:95%;
-    max-width:1400px;
-    margin:auto;
-}
+    @media (max-width: 900px) {
+        .ask-wrapper {
+            grid-template-columns: 1fr;
+        }
+    }
 
-.ask-card{
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 4px 12px rgba(0,0,0,.08);
-}
+    /* Sidebar Styling */
+    .history-sidebar {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        max-height: 80vh;
+        overflow-y: auto;
+    }
 
-.form-row{
-    display:flex;
-    gap:10px;
-}
+    .sidebar-title {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #6b7280;
+        margin-bottom: 15px;
+        letter-spacing: 0.05em;
+    }
 
-.form-row input{
-    flex:1;
-    padding:14px;
-    border-radius:10px;
-    border:1px solid #ddd;
-    font-size:16px;
-}
+    .history-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
 
-.form-row button{
-    width:100px;
-}
+    .history-item {
+        padding: 10px 12px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        color: #4b5563;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: all 0.2s;
+    }
 
-button{
-    padding:14px 20px;
-    background:#111827;
-    color:white;
-    border:none;
-    border-radius:10px;
-    cursor:pointer;
-}
+    .history-item:hover {
+        background: #fffbeb;
+        border-color: #d4a017;
+        color: #d4a017;
+    }
 
-button:hover{
-    opacity:0.9;
-}
+    /* Workspace Area */
+    .workspace-area {
+        display: flex;
+        flex-direction: column;
+    }
 
-.layout{
-    display:grid;
-    grid-template-columns:280px 1fr;
-    gap:20px;
-    margin-top:20px;
-    align-items:start;
-}
+    .page-header {
+        margin-bottom: 25px;
+    }
 
-.suggestions{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    margin-top:15px;
-}
+    .page-header h2 {
+        color: #111827;
+        font-size: 24px;
+        margin-bottom: 5px;
+    }
 
-.tag{
-    padding:12px;
-    background:#f3f4f6;
-    border-radius:10px;
-    cursor:pointer;
-    transition:0.2s;
-}
+    .page-header p {
+        color: #6b7280;
+        font-size: 14px;
+    }
 
-.tag:hover{
-    background:#e5e7eb;
-}
+    /* Input Card Styling */
+    .search-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        margin-bottom: 25px;
+    }
 
-.answer{
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 4px 12px rgba(0,0,0,.08);
-    white-space:pre-wrap;
-    line-height:1.8;
-}
+    .input-group {
+        display: flex;
+        gap: 12px;
+    }
 
-.question-box{
-    background:#f8fafc;
-    border-left:4px solid #d4a017;
-    padding:15px;
-    border-radius:10px;
-    margin:10px 0 20px 0;
-    font-weight:500;
-}
+    .input-group input {
+        flex: 1;
+        padding: 14px 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: border-color 0.2s;
+    }
 
-.answer-title{
-    margin-top:15px;
-    margin-bottom:10px;
-}
+    .input-group input:focus {
+        outline: none;
+        border-color: #d4a017;
+    }
 
-hr{
-    border:none;
-    border-top:1px solid #e5e7eb;
-    margin:20px 0;
-}
+    .btn-ask {
+        background: #d4a017;
+        color: white;
+        border: none;
+        padding: 0 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
 
+    .btn-ask:hover {
+        background: #b88a14;
+    }
+
+    /* Suggestions Grid */
+    .suggestions-section {
+        margin-top: 10px;
+    }
+
+    .suggestions-section h4 {
+        color: #374151;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .suggestions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 15px;
+    }
+
+    .suggestion-chip {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 16px;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .suggestion-chip:hover {
+        border-color: #d4a017;
+        background: #fffbeb;
+        transform: translateY(-2px);
+    }
+
+    .suggestion-chip p {
+        margin: 0;
+        font-size: 14px;
+        color: #4b5563;
+        line-height: 1.4;
+    }
+
+    /* Split Layout for Answers */
+    .results-layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 25px;
+    }
+
+    @media (max-width: 1200px) {
+        .results-layout {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .main-answer-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .side-metrics-card {
+        background: #fafafa;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 20px;
+        height: fit-content;
+    }
+
+    .user-query-box {
+        background: #f9fafb;
+        border-left: 4px solid #d4a017;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        border-radius: 0 8px 8px 0;
+        font-weight: 500;
+        color: #374151;
+    }
+
+    .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #111827;
+        margin: 20px 0 10px 0;
+    }
+
+    .section-title:first-of-type {
+        margin-top: 0;
+    }
+
+    .insights-box {
+        background: #f3f4f6;
+        padding: 15px;
+        border-radius: 8px;
+        white-space: pre-wrap;
+        color: #374151;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .sidebar-metric {
+        border-bottom: 1px solid #e5e7eb;
+        padding: 12px 0;
+    }
+
+    .sidebar-metric:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .sidebar-metric:first-child {
+        padding-top: 0;
+    }
+
+    .metric-label {
+        font-size: 12px;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .metric-val {
+        font-size: 20px;
+        font-weight: 700;
+        margin-top: 4px;
+    }
+
+    .metric-recommendation { color: #d4a017; }
+    .metric-confidence { color: #3b82f6; }
+    .risk-high { color: #ef4444; }
+    .risk-low { color: #22c55e; }
+    .risk-medium { color: #f59e0b; }
+
+    .hidden-element {
+        display: none;
+    }
 </style>
 
-<div class="container">
-
-    <div class="ask-card">
-
-        <h1>🤖 Ask GoldPulse AI</h1>
-
-        <br>
-
-        <form method="post">
-
-            <div class="form-row">
-
-                <input
-                    id="question-input"
-                    type="text"
-                    name="question"
-                    placeholder="Should I buy gold now?"
-                    required
-                >
-
-                <button type="submit">
-                    Ask
-                </button>
-
-            </div>
-
-        </form>
-
+<div class="ask-wrapper">
+    
+    <div class="history-sidebar">
+        <div class="sidebar-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <div class="sidebar-title" style="margin-bottom: 0;">Recent Threads</div>
+            {% if chat_history %}
+            <form action="/ask/clear" method="POST" style="margin: 0;" onsubmit="return confirm('Are you sure you want to clear your recent threads?');">
+                <button type="submit" class="btn-clear-history" style="background: none; border: none; color: #9ca3af; font-size: 11px; cursor: pointer; padding: 0; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#9ca3af'">Clear All</button>
+            </form>
+            {% endif %}
+        </div>
+        <div class="history-list">
+            {% if chat_history %}
+                {% for log in chat_history %}
+                    <div class="history-item"
+                         data-question="{{ log.question|escape }}"
+                         data-summary="{{ log.parsed_answer.get('Market Summary', '')|escape }}"
+                         data-insights="{{ log.parsed_answer.get('Key Insights', '')|escape }}"
+                         data-rec="{{ log.parsed_answer.get('Recommendation', '')|escape }}"
+                         data-risk="{{ log.parsed_answer.get('Risk Level', '')|escape }}"
+                         data-confidence="{{ log.parsed_answer.get('Confidence Score', '')|escape }}"
+                         onclick="viewHistorical(this)">
+                        💬 {{ log.question }}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div style="font-size: 12px; color: #9ca3af; text-align: center; padding: 10px 0;">No history yet</div>
+            {% endif %}
+        </div>
     </div>
 
-    <div class="layout">
+    <div class="workspace-area">
+        <div class="page-header">
+            <h2>Ask GoldPulse AI</h2>
+            <p>Query market data, generate structured analysis, or verify historical trends instantly.</p>
+        </div>
 
-        <div class="ask-card">
+        <div class="search-card">
+            <form action="/ask" method="POST" id="askForm">
+                <div class="input-group">
+                    <input type="text" name="question" id="questionInput" placeholder="Is today a good day to buy gold?" required value="{{ question if question else '' }}">
+                    <button type="submit" class="btn-ask">Ask Assistant</button>
+                </div>
+            </form>
+        </div>
 
-            <h3>Suggested Questions</h3>
-
-            <div class="suggestions">
-
-                <div class="tag" onclick="setQuestion('Should I buy gold now?')">
-                    Should I buy gold now?
+        <div class="results-layout {% if not answer %}hidden-element{% endif %}" id="displayLayout">
+            
+            <div class="main-answer-card">
+                <div class="user-query-box" id="renderQuestion">
+                    💡 "{{ question if question else '' }}"
                 </div>
 
-                <div class="tag" onclick="setQuestion('What is the current trend?')">
-                    What is the current trend?
+                <div id="errorRender" class="{% if not (answer and answer.error) %}hidden-element{% endif %}" style="white-space: pre-wrap; line-height: 1.6; color: #ef4444;">
+                    {{ answer.error if answer and answer.error else "" }}
                 </div>
+                
+                <div id="successRender" class="{% if answer and answer.error %}hidden-element{% endif %}">
+                    <div class="section-title">📊 Market Summary</div>
+                    <p id="renderSummary" style="line-height: 1.6; color: #4b5563; font-size: 14px; margin-bottom: 20px;">
+                        {{ answer["Market Summary"] if answer and "Market Summary" in answer else "" }}
+                    </p>
 
-                <div class="tag" onclick="setQuestion('Summarize recent gold activity')">
-                    Summarize recent gold activity
+                    <div class="section-title">💡 Key Insights</div>
+                    <div class="insights-box" id="renderInsights">
+                        {{- answer["Key Insights"] if answer and "Key Insights" in answer else "" -}}
+                    </div>
                 </div>
+            </div>
 
-                <div class="tag" onclick="setQuestion('Why is gold rising?')">
-                    Why is gold rising?
+            <div class="side-metrics-card {% if answer and answer.error %}hidden-element{% endif %}" id="sideMetricsPanel">
+                <div class="sidebar-metric">
+                    <div class="metric-label">Actionable Signal</div>
+                    <div class="metric-val metric-recommendation" id="renderRec">
+                        {{ answer["Recommendation"] if answer and "Recommendation" in answer else "" }}
+                    </div>
                 </div>
-
+                <div class="sidebar-metric">
+                    <div class="metric-label">Assessed Risk Level</div>
+                    <div class="metric-val {% if answer and answer['Risk Level'] == 'High' %}risk-high{% elif answer and answer['Risk Level'] == 'Low' %}risk-low{% else %}risk-medium{% endif %}" id="renderRisk">
+                        {{ answer["Risk Level"] if answer and "Risk Level" in answer else "" }}
+                    </div>
+                </div>
+                <div class="sidebar-metric">
+                    <div class="metric-label">AI Confidence Score</div>
+                    <div class="metric-val metric-confidence" id="renderConfidence">
+                        {{ answer["Confidence Score"] if answer and "Confidence Score" in answer else "" }}
+                    </div>
+                </div>
             </div>
 
         </div>
 
-        {% if answer %}
-
-        <div class="answer">
-
-            <h3>👤 You</h3>
-
-            <div class="question-box">
-                {{ question }}
+        {% if not answer %}
+        <div class="suggestions-section" id="suggestionsSection">
+            <h4>Suggested Inquiries</h4>
+            <div class="suggestions-grid">
+                <div class="suggestion-chip" onclick="submitSuggested('Is gold experiencing a short term bullish trend right now?')">
+                    <p>📈 <strong>Trend Analysis</strong></p>
+                    <p style="color: #6b7280; font-size: 13px; margin-top: 4px;">Is gold experiencing a short term bullish trend right now?</p>
+                </div>
+                <div class="suggestion-chip" onclick="submitSuggested('Based on the last 30 days of price actions, should I hold or buy?')">
+                    <p>💰 <strong>Investment Strategy</strong></p>
+                    <p style="color: #6b7280; font-size: 13px; margin-top: 4px;">Based on the last 30 days of price actions, should I hold or buy?</p>
+                </div>
+                <div class="suggestion-chip" onclick="submitSuggested('What factors are currently influencing the 24K gold rate change?')">
+                    <p>🔍 <strong>Market Volatility</strong></p>
+                    <p style="color: #6b7280; font-size: 13px; margin-top: 4px;">What factors are currently influencing the 24K gold rate change?</p>
+                </div>
             </div>
-
-            <hr>
-
-            <h3 class="answer-title">🤖 GoldPulse AI</h3>
-
-            <div>
-                {{ answer }}
-            </div>
-
         </div>
-
-        {% else %}
-
-        <div class="answer">
-
-            <h3>🤖 GoldPulse AI</h3>
-
-            <p>
-                Ask a question about gold prices,
-                market trends, investment insights,
-                historical performance, buying opportunities,
-                or market outlook.
-            </p>
-
-        </div>
-
         {% endif %}
 
     </div>
-
 </div>
 
 <script>
-function setQuestion(question) {
-    document.getElementById(
-        "question-input"
-    ).value = question;
+    // Helper function to lock the UI and show a loading state
+    function triggerLoadingState() {
+        const btn = document.querySelector('.btn-ask');
+        btn.innerHTML = '⏳ Thinking...';
+        btn.style.pointerEvents = 'none'; // Prevent double-clicking the button
+        btn.style.opacity = '0.8';
 
-    document.getElementById(
-        "question-input"
-    ).focus();
-}
+        // Disable all suggestion chips so they can't be double-clicked
+        const chips = document.querySelectorAll('.suggestion-chip');
+        chips.forEach(chip => {
+            chip.style.pointerEvents = 'none';
+            chip.style.opacity = '0.5';
+        });
+    }
+
+    // Trigger loading when form is submitted (via Enter key or button click)
+    document.getElementById('askForm').addEventListener('submit', function() {
+        triggerLoadingState();
+    });
+
+    function submitSuggested(text) {
+        document.getElementById('questionInput').value = text;
+        triggerLoadingState(); // Lock UI
+        document.getElementById('askForm').submit();
+    }
+
+    // Navigates through historical exchanges locally without hitting the server again
+    function viewHistorical(q, summary, insights, rec, risk, confidence) {
+        // Handle if element is passed instead of parameters (like viewHistorical(this))
+        if (q && typeof q === 'object' && q.getAttribute) {
+            const element = q;
+            q = element.getAttribute('data-question');
+            summary = element.getAttribute('data-summary');
+            insights = element.getAttribute('data-insights');
+            rec = element.getAttribute('data-rec');
+            risk = element.getAttribute('data-risk');
+            confidence = element.getAttribute('data-confidence');
+        }
+
+        // Hide suggestions if they are currently visible
+        const sugg = document.getElementById('suggestionsSection');
+        if(sugg) sugg.style.display = 'none';
+        
+        // Show the display layout wrapper
+        document.getElementById('displayLayout').style.display = 'grid';
+        
+        // If there's an error block showing, hide it, and show the success block
+        document.getElementById('errorRender').style.display = 'none';
+        document.getElementById('successRender').style.display = 'block';
+        document.getElementById('sideMetricsPanel').style.display = 'block';
+
+        // Render historical properties to display elements
+        document.getElementById('renderQuestion').innerText = '💡 "' + q + '"';
+        document.getElementById('renderSummary').innerText = summary;
+        document.getElementById('renderInsights').innerText = insights;
+        document.getElementById('renderRec').innerText = rec;
+        document.getElementById('renderConfidence').innerText = confidence;
+        
+        // Handle Risk color classes safely
+        const riskEl = document.getElementById('renderRisk');
+        riskEl.innerText = risk;
+        riskEl.classList.remove('risk-high', 'risk-low', 'risk-medium');
+        if (risk === 'High') {
+            riskEl.classList.add('risk-high');
+        } else if (risk === 'Low') {
+            riskEl.classList.add('risk-low');
+        } else {
+            riskEl.classList.add('risk-medium');
+        }
+    }
 </script>
-
 {% endblock %}

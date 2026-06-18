@@ -1,14 +1,15 @@
 from dotenv import load_dotenv
-from sqlalchemy import desc
-from sqlalchemy import String
+import uuid
 from datetime import datetime
 import os
 from sqlalchemy import (
     create_engine,
+    desc,
     Column,
     Integer,
     Float,
-    Date
+    Date,
+    String
 )
 from sqlalchemy.orm import declarative_base, sessionmaker
 load_dotenv()
@@ -47,6 +48,11 @@ class QuestionLog(Base):
         primary_key=True
     )
 
+    session_id = Column(
+        String,
+        nullable=True
+    )
+
     question = Column(
         String,
         nullable=False
@@ -82,3 +88,19 @@ def get_all_prices(session):
         .order_by(GoldPrice.date.desc())
         .all()
     )
+
+def get_session_history(session, session_id):
+    if not session_id:
+        return []
+    return (
+        session.query(QuestionLog)
+        .filter_by(session_id=session_id)
+        .order_by(QuestionLog.id.asc())
+        .all()
+    )
+
+def clear_session_history(session, session_id):
+    if not session_id:
+        return
+    session.query(QuestionLog).filter_by(session_id=session_id).delete()
+    session.commit()

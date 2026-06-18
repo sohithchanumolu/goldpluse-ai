@@ -1,9 +1,8 @@
-from langchain_google_genai import data
-from src.alerts import check_alerts
-from src.analyzer import generate_report
-from src.telegram_bot import send_message
 import asyncio
+from src.alerts import check_alerts
 from src.analyzer import generate_report, get_price_summary
+from src.telegram_bot import send_message
+from src.rag_engine import initialize_vector_db
 from src.database import (
     DATABASE_URL,
     init_db,
@@ -27,10 +26,10 @@ def main():
         print("Today's record already exists.")
     else:
         record = GoldPrice(
-        date=data["date"],
-        city=data["city"],
-        price_24k=data["price_24k"],
-        price_22k=data["price_22k"]
+            date=data["date"],
+            city=data["city"],
+            price_24k=data["price_24k"],
+            price_22k=data["price_22k"]
         )
         session.add(record)
         session.commit()
@@ -45,6 +44,7 @@ def main():
     while "\n\n\n" in report:
         report = report.replace("\n\n\n", "\n\n")
 
+    # Save to the latest report file (for the web dashboard)
     with open(
         "data/latest_report.txt",
         "w",
@@ -52,43 +52,50 @@ def main():
     ) as file:
         file.write(report)
     
+    # Save to the history file (for the AI memory)
     with open(
         "data/report_history.txt",
         "a",
         encoding="utf-8"
     ) as file:
-        file.write(
-            f"\n\n=== {data['date']} ===\n"
-        )
+        file.write(f"\n\n=== {data['date']} ===\n")
+        file.write(report)
+    
+    # Initialize Vector DB (Wrapped in try/except so it doesn't break alerts if it fails)
+    try:
+        initialize_vector_db()
+    except Exception as e:
+        print(f"Warning: ChromaDB failed to initialize: {e}")
 
-    file.write(report)
+    # Telegram Message (Flush left to prevent weird spacing on mobile)
+    telegram_message = f"""📈 GoldPulse AI Daily Brief
 
-    telegram_message = f"""
-        📈 GoldPulse AI
+                        📍 {data['city']}
+                        💵 USD/INR Rate: {data['usd_inr_rate']}
 
-        📍 Hyderabad
+                        🥇 24K Gold: ₹{summary['current_24k']}/g
+                        📊 7-Day Avg: ₹{summary['average_24k']}/g
 
-        💵 USD/INR Rate: {data['usd_inr_rate']}
+                        💍 22K Gold: ₹{summary['current_22k']}/g
+                        📊 7-Day Avg: ₹{summary['average_22k']}/g
 
-        🥇 24K Gold: ₹{summary['current_24k']}/g
-        📊 7-Day Avg: ₹{summary['average_24k']}/g
+                        📈 Trend: {summary['trend']}
 
-        💍 22K Gold: ₹{summary['current_22k']}/g
-        📊 7-Day Avg: ₹{summary['average_22k']}/g
+                        {report}
 
-        📈 Trend: {summary['trend']}
-
-        {report}
-        ⚠️ Prices are estimated retail values based on international gold markets and USD/INR exchange rates. Actual local jeweller prices may vary.
-    """
+                        ⚠️ Prices are estimated retail values. Actual local jeweller prices may vary. """
+    
     asyncio.run(
         send_message(telegram_message)
     )
 
     alerts = check_alerts(
         summary["current_22k"],
-        summary["current_24k"]
+        summary["current_24k"],
+        summary["average_22k"],
+        summary["average_24k"]
     )
+    
     for alert in alerts:
         asyncio.run(
             send_message(alert)
@@ -99,4 +106,5 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         asyncio.run(
-        send_message(f"❌ GoldPulse Error\n\n{str(e)}"))
+            send_message(f"❌ GoldPulse Error\n\n{str(e)}")
+        )

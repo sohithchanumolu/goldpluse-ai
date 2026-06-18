@@ -13,6 +13,17 @@ from src.database import (
 def get_price_summary(days=7):
     session = SessionLocal()
     rows = get_last_n_days(session, days)
+
+    if not rows:
+        return {
+            "usd_inr_rate": get_usd_inr_rate(),
+            "current_24k": 0,
+            "average_24k": 0,
+            "current_22k": 0,
+            "average_22k": 0,
+            "trend": "No Data"
+        }
+
     data = [
         {
             "date": r.date,
@@ -57,41 +68,46 @@ def generate_report():
     summary = get_price_summary()
     prompt = ChatPromptTemplate.from_template(
     """
-    You are a professional Indian gold market analyst.
+    You are a Senior Commodities Analyst specializing in the Indian Gold Market.
+    Analyze the following daily market data and provide a comprehensive, highly valuable institutional-grade briefing.
 
+    MARKET DATA:
     City: Hyderabad
-
     USD/INR Exchange Rate: {usd_inr_rate}
 
-    Current 24K Gold Price: ₹{current_24k}/gram
-    7-Day Average 24K Price: ₹{average_24k}/gram
+    24K Gold (Investment Grade):
+    - Current Price: ₹{current_24k}/gram
+    - 7-Day Moving Average: ₹{average_24k}/gram
 
-    Current 22K Gold Price: ₹{current_22k}/gram
-    7-Day Average 22K Price: ₹{average_22k}/gram
+    22K Gold (Retail/Jewellery):
+    - Current Price: ₹{current_22k}/gram
+    - 7-Day Moving Average: ₹{average_22k}/gram
 
-    Market Trend: {trend}
+    Momentum Indicator: {trend}
 
-    Generate exactly in this format:
+    Generate a detailed analysis report using EXACTLY the following headers (in ALL CAPS):
 
-    Market Summary:
-    <analysis>
+    MACROECONOMIC OVERVIEW:
+    Provide a 2-3 sentence analysis of how the current USD/INR rate and global economic factors typically influence these gold prices. Mention safe-haven demand or currency weakness if applicable.
 
-    24K Gold Analysis:
-    <analysis>
+    TECHNICAL PRICE ACTION:
+    Analyze the spread between the current prices and the 7-day moving averages. Explain what this momentum ({trend}) indicates about current market buying pressure or resistance.
 
-    22K Gold Analysis:
-    <analysis>
+    RETAIL & JEWELLERY OUTLOOK (22K):
+    Provide specific, practical insights for retail consumers looking to purchase 22K gold. Is the current premium over the average a warning sign, or an opportunity before further hikes?
 
-    Investor Insight:
-    <analysis>
+    STRATEGIC RECOMMENDATION:
+    Provide clear, actionable advice split into two distinct bullet points:
+    - Short-term Traders: (Actionable signal based on the 7-day trend)
+    - Long-term Investors/Buyers: (Strategic advice for wealth preservation)
 
-    Do not use markdown.
-    Do not use bullet points.
-    Keep each section 1-2 sentences.
-
-    Keep it under 120 words.
+    FORMATTING RULES:
+    - DO NOT use markdown symbols like ** or #. 
+    - Use standard hyphens (-) for bullet points.
+    - Write in a highly professional, authoritative financial tone.
+    - Provide deep reasoning, do not just repeat the numbers provided.
     """
-)
+    )
 
     chain = prompt | llm
     response = chain.invoke(summary)
