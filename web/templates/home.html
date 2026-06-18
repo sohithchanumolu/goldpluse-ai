@@ -1,38 +1,40 @@
 {% extends "base.html" %}
 
 {% block content %}
-
 <style>
-
+/* Page Specific Overrides */
 .hero {
     text-align: center;
-    padding: 120px 20px;
+    padding: 60px 20px;
 }
 
 .hero h1 {
-    font-size: 56px;
-    margin-bottom: 20px;
-    color: #111827;
+    font-size: var(--h1-size);
+    margin-bottom: 15px;
+    color: var(--primary-color);
 }
 
 .hero p {
-    font-size: 22px;
-    color: #666;
-    margin-bottom: 40px;
+    font-size: 20px;
+    color: var(--muted-text);
+    margin-bottom: 30px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.btn {
-    background: #d4a017;
-    color: white;
-    padding: 15px 35px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-size: 18px;
-    font-weight: bold;
+.hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
-.btn:hover {
-    opacity: 0.9;
+.telegram-btn {
+    background: #229ED9;
+}
+.telegram-btn:hover {
+    box-shadow: 0 4px 12px rgba(34, 158, 217, 0.3);
 }
 
 .features {
@@ -40,86 +42,43 @@
     justify-content: center;
     gap: 30px;
     flex-wrap: wrap;
-    padding: 50px;
+    padding: 20px;
 }
 
 .feature-card {
     width: 280px;
-    background: white;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-align: center;
 }
 
 .feature-card h3 {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
-
-.telegram-btn{
-    display:inline-block;
-    margin-top:15px;
-    padding:12px 24px;
-    background:#229ED9;
-    color:white;
-    text-decoration:none;
-    border-radius:10px;
-    font-weight:600;
-    transition:0.3s;
-}
-
-.telegram-btn:hover{
-    opacity:0.9;
-}
-
 </style>
 
-<section class="hero">
-
+<section class="hero fade-wrapper">
     <h1>Track Gold. Understand Trends.</h1>
+    <p>AI-powered gold market intelligence for investors and jewellery buyers.</p>
 
-    <p>
-        AI-powered gold market intelligence
-        for investors and jewellery buyers.
-    </p>
-
-    <a href="/dashboard" class="btn">
-        Open Dashboard
-    </a>
-
-    <a href="https://t.me/GoldPluse_AI_bot"
-        target="_blank"
-        class="telegram-btn">
-        📱 Join Telegram Alerts
-    </a>
-
+    <div class="hero-actions">
+        <a href="/dashboard" class="btn">Open Dashboard</a>
+        <a href="https://t.me/GoldPluse_AI_bot" target="_blank" class="btn telegram-btn">
+            📱 Join Telegram Alerts
+        </a>
+    </div>
 </section>
 
-<section class="features">
-
-    <div class="feature-card">
+<section class="features fade-wrapper">
+    <div class="card-container feature-card">
         <h3>📊 Historical Tracking</h3>
-        <p>
-            Monitor daily 24K and 22K gold prices
-            with historical records.
-        </p>
+        <p class="caption">Monitor daily 24K and 22K gold prices with historical records.</p>
     </div>
-
-    <div class="feature-card">
+    <div class="card-container feature-card">
         <h3>🤖 AI Analysis</h3>
-        <p>
-            Receive AI-generated market insights
-            and investor recommendations.
-        </p>
+        <p class="caption">Receive AI-generated market insights and investor recommendations.</p>
     </div>
-
-    <div class="feature-card">
+    <div class="card-container feature-card">
         <h3>📱 Telegram Alerts</h3>
-        <p>
-            Stay updated with automated gold
-            market notifications.
-        </p>
+        <p class="caption">Stay updated with automated gold market notifications.</p>
     </div>
-
 </section>
-
 {% endblock %}

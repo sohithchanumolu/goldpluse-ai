@@ -1,158 +1,140 @@
 {% extends "base.html" %}
 
 {% block content %}
-
 <style>
-
-.container {
-    max-width: 1000px;
-    margin: auto;
+.about-container {
+    max-width: 900px;
+    margin: 0 auto;
 }
 
-.section {
-    background: white;
-    padding: 25px;
-    margin-bottom: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+.about-section {
+    margin-bottom: 25px;
 }
 
-h1 {
-    margin-bottom: 20px;
-}
-
-h2 {
+.about-section h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     margin-bottom: 15px;
-    color: #111827;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 10px;
 }
 
-p {
-    line-height: 1.8;
-    color: #444;
+.about-list {
+    list-style: none;
+    padding-left: 0;
 }
 
-ul {
-    margin-left: 20px;
-    line-height: 1.8;
+.about-list li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 12px;
 }
 
+.about-list li:before {
+    content: "•";
+    color: var(--gold-color);
+    font-weight: bold;
+    font-size: 20px;
+    position: absolute;
+    left: 0;
+    top: -2px;
+}
+
+.timeline {
+    border-left: 3px solid #e5e7eb;
+    padding-left: 20px;
+    margin-left: 10px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.timeline-item:before {
+    content: "";
+    position: absolute;
+    left: -28px;
+    top: 5px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--gold-color);
+}
+
+.timeline-date {
+    font-weight: 600;
+    color: var(--muted-text);
+    font-size: 14px;
+    margin-bottom: 5px;
+}
 </style>
 
-<div class="container">
+<div class="fade-wrapper about-container">
+    <h1 style="text-align: center; margin-bottom: 40px;">About GoldPulse AI</h1>
 
-    <div class="section">
-
-        <h1>📈 GoldPulse AI</h1>
-
+    <div class="card-container about-section">
+        <h2>👁️ Vision</h2>
         <p>
-            GoldPulse AI is an AI-powered gold market intelligence platform
-            designed for Indian investors and jewellery buyers.
-            It combines real-time gold pricing, historical tracking,
-            automated analysis, and AI-generated market insights into a
-            single dashboard.
+            GoldPulse AI aims to democratize financial intelligence in the Indian Gold Market. By combining real-time data, historical tracking, and generative AI analysis, we empower retail consumers and investors to make data-driven purchasing decisions with institutional-grade insights.
         </p>
-
     </div>
 
-    <div class="section">
-
+    <div class="card-container about-section">
         <h2>🚀 Features</h2>
-
-        <ul>
+        <ul class="about-list">
             <li>Daily 24K and 22K gold price tracking</li>
             <li>USD/INR exchange rate integration</li>
             <li>Historical gold price database</li>
-            <li>Interactive trend charts</li>
-            <li>AI-generated market analysis</li>
+            <li>Interactive Plotly trend charts</li>
+            <li>AI-generated market analysis (Summary, Risk, Confidence)</li>
             <li>Telegram notifications and alerts</li>
             <li>FastAPI-powered dashboard</li>
-            <li>Ask GoldPulse AI Assistant</li>
+            <li>Ask GoldPulse AI Assistant (RAG enabled)</li>
         </ul>
-
     </div>
 
-    <div class="section">
-
+    <div class="card-container about-section">
         <h2>⚙️ Technology Stack</h2>
-
-        <ul>
-            <li>Python</li>
-            <li>FastAPI</li>
-            <li>SQLAlchemy</li>
-            <li>PostgreSQL</li>
+        <ul class="about-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <li>Python & FastAPI</li>
+            <li>PostgreSQL & SQLAlchemy</li>
             <li>Plotly</li>
-            <li>Google Gemini</li>
+            <li>Google Gemini AI</li>
+            <li>Langchain & ChromaDB</li>
             <li>Telegram Bot API</li>
-            <li>HTML & CSS</li>
-            <li>Railway</li>
+            <li>HTML, CSS & Vanilla JS</li>
+            <li>Railway Deployment</li>
         </ul>
-
     </div>
 
-    <div class="section">
-
-        <h2>🏗️ System Architecture</h2>
-
-        <p>
-
-            Gold Price API
-            → Data Collection
-
-            <br><br>
-
-            Data Collection
-            → PostgreSQL Database
-
-            <br><br>
-
-            Database
-            → Dashboard + History
-
-            <br><br>
-
-            Gemini AI
-            → Market Analysis
-
-            <br><br>
-
-            Ask GoldPulse
-            → AI Assistant
-
-            <br><br>
-
-            Analysis
-            → Website + Telegram Alerts
-
-        </p>
-
+    <div class="card-container about-section">
+        <h2>📅 Timeline & Roadmap</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-date">Phase 1 (Complete)</div>
+                <p>Data Collection, Database Integration, and Basic Dashboard</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Phase 2 (Complete)</div>
+                <p>Gemini AI Market Analysis, Telegram Bot Alerts</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Phase 3 (Complete)</div>
+                <p>RAG AI Assistant, UI/UX Modernization, Structured Data</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-date">Phase 4 (Future)</div>
+                <p>Dark mode, price prediction models, and portfolio tracking.</p>
+            </div>
+        </div>
     </div>
 
-    <div class="section">
-
-        <h2>🛣️ Roadmap</h2>
-
-        <ul>
-            <li>Price prediction models</li>
-            <li>Gold market sentiment analysis</li>
-            <li>RAG-powered AI assistant</li>
-            <li>Portfolio tracking</li>
-            <li>Email alerts</li>
-            <li>Mobile application</li>
-        </ul>
-
-    </div>
-
-    <div class="section">
-
+    <div class="card-container about-section" style="text-align: center;">
         <h2>👨‍💻 Developer</h2>
-
-        <p>
-            Built as an end-to-end AI and data engineering project using
-            FastAPI, PostgreSQL, Gemini AI, Plotly, and Telegram automation.
-        </p>
-
+        <p>Built as an end-to-end AI and data engineering project by <strong>Sohith</strong>.</p>
     </div>
 
 </div>
-
 {% endblock %}

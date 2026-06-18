@@ -85,30 +85,22 @@ def generate_report():
 
     Momentum Indicator: {trend}
 
-    Generate a detailed analysis report using EXACTLY the following headers (in ALL CAPS):
+    You MUST output ONLY a raw JSON object (without any markdown code blocks, backticks, or other text).
+    The JSON object MUST have EXACTLY these keys:
+    - "summary": A 2-3 sentence macroeconomic and technical summary, explicitly mentioning the USD/INR rate.
+    - "trend": "Bullish", "Bearish", or "Neutral".
+    - "confidence": An integer representing your confidence score out of 100 (e.g., 92).
+    - "risk": "Low", "Medium", or "High".
+    - "recommendation": A short, punchy actionable recommendation (e.g., "Buy on dips").
+    - "key_insights": A list of 3-4 strings containing specific, practical insights for retail and investment consumers.
 
-    MACROECONOMIC OVERVIEW:
-    Provide a 2-3 sentence analysis of how the current USD/INR rate and global economic factors typically influence these gold prices. Mention safe-haven demand or currency weakness if applicable.
-
-    TECHNICAL PRICE ACTION:
-    Analyze the spread between the current prices and the 7-day moving averages. Explain what this momentum ({trend}) indicates about current market buying pressure or resistance.
-
-    RETAIL & JEWELLERY OUTLOOK (22K):
-    Provide specific, practical insights for retail consumers looking to purchase 22K gold. Is the current premium over the average a warning sign, or an opportunity before further hikes?
-
-    STRATEGIC RECOMMENDATION:
-    Provide clear, actionable advice split into two distinct bullet points:
-    - Short-term Traders: (Actionable signal based on the 7-day trend)
-    - Long-term Investors/Buyers: (Strategic advice for wealth preservation)
-
-    FORMATTING RULES:
-    - DO NOT use markdown symbols like ** or #. 
-    - Use standard hyphens (-) for bullet points.
-    - Write in a highly professional, authoritative financial tone.
-    - Provide deep reasoning, do not just repeat the numbers provided.
+    Write in a highly professional, authoritative financial tone. Do not just repeat numbers; provide deep reasoning.
     """
     )
 
     chain = prompt | llm
     response = chain.invoke(summary)
-    return response.content
+    
+    # Strip any markdown ticks just in case the LLM outputs them
+    content = response.content.replace("```json", "").replace("```", "").strip()
+    return content

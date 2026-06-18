@@ -39,10 +39,19 @@ def main():
     summary = get_price_summary()
     report = generate_report()
 
-    report = report.replace("**", "")
-    report = report.strip()
-    while "\n\n\n" in report:
-        report = report.replace("\n\n\n", "\n\n")
+    import json
+    try:
+        report_data = json.loads(report)
+        formatted_report = f"🤖 AI Summary: {report_data.get('summary', '')}\n\n"
+        formatted_report += f"💡 Recommendation: {report_data.get('recommendation', '')}\n"
+        formatted_report += f"⚠️ Risk Level: {report_data.get('risk', '')}\n"
+        formatted_report += f"🎯 Confidence: {report_data.get('confidence', '')}%\n\n"
+        if "key_insights" in report_data:
+            formatted_report += "🔑 Key Insights:\n"
+            for insight in report_data["key_insights"]:
+                formatted_report += f"- {insight}\n"
+    except json.JSONDecodeError:
+        formatted_report = report
 
     # Save to the latest report file (for the web dashboard)
     with open(
@@ -81,7 +90,7 @@ def main():
 
                         📈 Trend: {summary['trend']}
 
-                        {report}
+                        {formatted_report}
 
                         ⚠️ Prices are estimated retail values. Actual local jeweller prices may vary. """
     

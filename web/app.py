@@ -1,11 +1,13 @@
 import uuid
 import json
 import plotly.express as px
-from src.gold_assistant import ask_goldpulse
+from src.gold_assistant import ask_goldpulse, stream_goldpulse
 from src.main import main
-from fastapi import FastAPI, Request, Response, Cookie, Form
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI, Request, Response, Cookie, Form, Body
+from fastapi.responses import RedirectResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 import sys
 from pathlib import Path
 sys.path.append(
@@ -20,6 +22,8 @@ from src.database import(
 )
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="web/static"), name="static")
 
 templates = Jinja2Templates(
     directory="web/templates"
@@ -50,10 +54,9 @@ def dashboard(request: Request):
                 "price_22k": 0,
                 "trend_24k": "No Data",
                 "trend_22k": "No Data",
-                "records_count": 0,
                 "chart_24k": "",
                 "chart_22k": "",
-                "ai_report": "No data available yet. Run the data pipeline first."
+                "ai_report": None
         }
     )
 
@@ -119,7 +122,8 @@ def dashboard(request: Request):
     )
 
     chart_24k = fig_24k.to_html(
-        full_html=False
+        full_html=False,
+        config={'displayModeBar': False, 'responsive': True}
     )
 
     fig_22k = px.line(
@@ -140,15 +144,19 @@ def dashboard(request: Request):
     )
 
     chart_22k = fig_22k.to_html(
-        full_html=False
+        full_html=False,
+        config={'displayModeBar': False, 'responsive': True}
     )
 
     report_file = Path("data/latest_report.txt")
     if report_file.exists():
         with open(report_file, "r", encoding="utf-8") as file:
-            ai_report = file.read()
+            try:
+                ai_report = json.loads(file.read())
+            except json.JSONDecodeError:
+                ai_report = None
     else:
-        ai_report = "No AI report generated yet."
+        ai_report = None
 
     return templates.TemplateResponse(
         request=request,
@@ -168,13 +176,13 @@ def dashboard(request: Request):
 
 
 @app.get("/history")
-def history(request:Request):
+def history(request: Request, page: int = 1):
     session = SessionLocal()
     prices = get_all_prices(session)
-    history_data=[]
+    history_data = []
 
-    for i,row in enumerate(prices):
-        if i<len(prices)-1:
+    for i, row in enumerate(prices):
+        if i < len(prices) - 1:
             previous_price = prices[i+1].price_24k
             daily_change = row.price_24k - previous_price
         else:
@@ -188,11 +196,27 @@ def history(request:Request):
             "daily_change": daily_change
         })
 
+    # Pagination logic (7 records per page)
+    per_page = 7
+    total_records = len(history_data)
+    total_pages = (total_records + per_page - 1) // per_page
+    
+    page = max(1, min(page, total_pages)) if total_pages > 0 else 1
+    
+    start_idx = (page - 1) * per_page
+    end_idx = start_idx + per_page
+    
+    paginated_data = history_data[start_idx:end_idx]
+
     return templates.TemplateResponse(
         request=request,
         name="history.html",
         context={
-            "history_data": history_data
+            "history_data": paginated_data,
+            "page": page,
+            "total_pages": total_pages,
+            "has_next": page < total_pages,
+            "has_prev": page > 1
         }
     )
 
@@ -229,7 +253,7 @@ def ask_page(request: Request, session_id: str = Cookie(None)):
         except:
             parsed_history.append({
                 "question": record.question,
-                "parsed_answer": {"error": record.answer}
+                "parsed_answer": record.answer
             })
 
     response = templates.TemplateResponse(
@@ -247,6 +271,20 @@ def ask_page(request: Request, session_id: str = Cookie(None)):
         response.set_cookie(key="session_id", value=new_session_id, httponly=True)
     
     return response
+
+
+class StreamRequest(BaseModel):
+    question: str
+
+@app.post("/ask/stream")
+async def ask_stream(request: Request, body: StreamRequest, response: Response, session_id: str = Cookie(None)):
+    if not session_id:
+        session_id = str(uuid.uuid4())
+        response.set_cookie(key="session_id", value=session_id, httponly=True)
+    
+    # We use a generator expression or just pass the generator directly
+    generator = stream_goldpulse(body.question, session_id=session_id)
+    return StreamingResponse(generator, media_type="text/event-stream")
 
 
 @app.post("/ask")

@@ -1,86 +1,206 @@
 {% extends "base.html" %}
 
 {% block content %}
-
 <style>
-
-h1 {
-    margin-bottom: 20px;
+/* Responsive Table Styles */
+.table-wrapper {
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    margin-top: 20px;
+    border: 1px solid #e5e7eb;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-th,
-td {
-    padding: 15px;
-    border-bottom: 1px solid #ddd;
-    text-align: center;
+th, td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 th {
-    background: #111827;
+    background: var(--primary-color);
     color: white;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
-tr:hover {
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover td {
     background: #f8fafc;
 }
 
+/* Mobile Card Layout for Table */
+@media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+    
+    thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    tr {
+        border-bottom: 2px solid #e5e7eb;
+        padding: 15px 0;
+    }
+    
+    tr:last-child {
+        border-bottom: none;
+    }
+    
+    td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+        text-align: right;
+        font-size: 14px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+    
+    td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: 600;
+        color: var(--muted-text);
+    }
+}
+
+.positive-change {
+    color: #166534;
+    background: #dcfce7;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    display: inline-block;
+}
+
+.negative-change {
+    color: #991b1b;
+    background: #fee2e2;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    display: inline-block;
+}
+
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 25px;
+    padding: 10px 0;
+}
+
+.pagination .btn {
+    padding: 8px 16px;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.pagination .btn:hover {
+    background: var(--gold-color);
+    box-shadow: none;
+    transform: none;
+}
+
+.pagination .btn.disabled {
+    background: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.pagination .page-info {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--body-text);
+}
 </style>
 
-<h1>📊 Gold Price History</h1>
-
-<table>
-
-    <tr>
-        <th>Date</th>
-        <th>City</th>
-        <th>24K Gold</th>
-        <th>22K Gold</th>
-        <th>Daily Change</th>
-    </tr>
-
-    {% for row in history_data %}
-
-    <tr>
-        <td>{{ row.date }}</td>
-        <td>{{ row.city }}</td>
-        <td>₹{{ row.price_24k }}</td>
-        <td>₹{{ row.price_22k }}</td>
-
-        <td>
-
-        {% if row.daily_change > 0 %}
-
-            <span style="color:green;">
-                +₹{{ "%.2f"|format(row.daily_change) }}
-            </span>
-
-        {% elif row.daily_change < 0 %}
-
-            <span style="color:red;">
-                ₹{{ "%.2f"|format(row.daily_change) }}
-            </span>
-
+<div class="fade-wrapper">
+    <h1>📊 Gold Price History</h1>
+    
+    {% if history_data %}
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>City</th>
+                    <th>24K Gold</th>
+                    <th>22K Gold</th>
+                    <th>Daily Change</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in history_data %}
+                <tr>
+                    <td data-label="Date">{{ row.date }}</td>
+                    <td data-label="City">{{ row.city }}</td>
+                    <td data-label="24K Gold">₹{{ row.price_24k }}</td>
+                    <td data-label="22K Gold">₹{{ row.price_22k }}</td>
+                    <td data-label="Daily Change">
+                        {% if row.daily_change > 0 %}
+                            <span class="positive-change">+₹{{ "%.2f"|format(row.daily_change) }}</span>
+                        {% elif row.daily_change < 0 %}
+                            <span class="negative-change">₹{{ "%.2f"|format(row.daily_change) }}</span>
+                        {% else %}
+                            <span style="color: var(--muted-text)">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="pagination">
+        {% if has_prev %}
+        <a href="/history?page={{ page - 1 }}" class="btn">« Previous</a>
         {% else %}
-
-            -
-
+        <span class="btn disabled">« Previous</span>
         {% endif %}
-
-        </td>
-
-    </tr>
-
-    {% endfor %}
-
-</table>
-
+        
+        <span class="page-info">Page {{ page }} of {{ total_pages }}</span>
+        
+        {% if has_next %}
+        <a href="/history?page={{ page + 1 }}" class="btn">Next »</a>
+        {% else %}
+        <span class="btn disabled">Next »</span>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="empty-state" style="margin-top: 30px;">
+        <h3>No Historical Data</h3>
+        <p>Run the daily pipeline to generate records.</p>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}

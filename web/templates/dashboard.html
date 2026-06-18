@@ -1,199 +1,162 @@
 {% extends "base.html" %}
 
 {% block content %}
-
 <style>
-
-h1 {
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-.cards {
-    display: flex;
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
+    margin-bottom: 30px;
 }
 
-.card {
-    background: white;
-    width: 300px;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-}
-
-.card h2 {
-    margin-bottom: 15px;
-}
-
-.price {
-    font-size: 36px;
-    font-weight: 700;
-    color:#d4a017;
-    margin-bottom: 10px;
-}
-
-.trend {
-    font-size: 18px;
-    color: #555;
-}
-
-.chart-card {
-    background: white;
-    padding: 25px;
-    margin-top: 30px;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.notice {
-    background: #fff8e1;
-    border-left: 5px solid #f4b400;
-    padding: 20px;
-    margin-top: 30px;
-    border-radius: 10px;
-}
-
-.notice h3 {
-    margin-bottom: 10px;
-}
-
-.notice ul {
-    margin-top: 10px;
-    margin-left: 20px;
-}
-
-.ai-report {
-    background: white;
-    padding: 25px;
-    margin-top: 30px;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    line-height: 1.6;
-}
-
-.report-content {
-    margin-top: 15px;
-    white-space: pre-wrap;
-    line-height: 1.8;
-    font-size: 16px;
-}
-
-.hero {
+.stat-card {
     text-align: center;
-    margin: 40px 0;
+    padding: 20px;
 }
 
-.hero h1 {
-    font-size: 42px;
+.stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gold-color);
+    margin: 10px 0;
+}
+
+.stat-trend {
+    font-size: 14px;
+    color: var(--muted-text);
+}
+
+.chart-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 1000px) {
+    .chart-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+.chart-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+.ai-report-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 1000px) {
+    .ai-report-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.insight-list {
+    margin-top: 15px;
+    list-style-type: none;
+}
+
+.insight-list li {
+    background: var(--bg-color);
+    padding: 12px;
+    border-radius: 8px;
     margin-bottom: 10px;
+    font-size: 14px;
+    border-left: 3px solid var(--gold-color);
 }
-
-.hero p {
-    color: #666;
-    font-size: 18px;
-}
-
 </style>
 
-<div class="hero">
-    <h1>Track Gold. Understand Trends.</h1>
+<div class="fade-wrapper">
+    <h1 style="text-align: center; margin-bottom: 30px;">Market Dashboard</h1>
 
-    <p>
-        AI-powered gold market insights,
-        price tracking, and historical analysis.
-    </p>
-</div>
-
-<div class="cards">
-
-    <div class="card">
-        <h2>🥇 Estimated 24K Gold</h2>
-
-        <div class="price">
-            ₹{{ price_24k }}/g
+    <div class="dashboard-grid">
+        <div class="card-container stat-card">
+            <h3>🥇 24K Gold</h3>
+            <div class="stat-value">₹{{ price_24k }}/g</div>
+            <div class="stat-trend">Trend: {{ trend_24k }}</div>
         </div>
 
-        <div class="trend">
-            Trend: {{ trend_24k }}
-        </div>
-    </div>
-
-    <div class="card">
-        <h2>💍 Estimated 22K Gold</h2>
-
-        <div class="price">
-            ₹{{ price_22k }}/g
+        <div class="card-container stat-card">
+            <h3>💍 22K Gold</h3>
+            <div class="stat-value">₹{{ price_22k }}/g</div>
+            <div class="stat-trend">Trend: {{ trend_22k }}</div>
         </div>
 
-        <div class="trend">
-            Trend: {{ trend_22k }}
+        <div class="card-container stat-card">
+            <h3>📈 Market Trend</h3>
+            <div class="stat-value">
+                {% if ai_report and ai_report.trend %}
+                    {{ ai_report.trend }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </div>
+            <div class="stat-trend">Based on AI Analysis</div>
         </div>
-    </div>
 
-    <div class="card">
-        <h2>📊 Records Stored</h2>
-
-        <div class="price">
-            {{ record_count }}
+        <div class="card-container stat-card">
+            <h3>🎯 Confidence Score</h3>
+            <div class="stat-value">
+                {% if ai_report and ai_report.confidence %}
+                    {{ ai_report.confidence }}%
+                {% else %}
+                    N/A
+                {% endif %}
+            </div>
+            <div class="stat-trend">AI Certainty</div>
         </div>
     </div>
 
-    <div class="card">
-        <h2>🕒 Last Updated</h2>
-
-        <div class="trend">
-            {{ last_updated }}
+    {% if price_24k == 0 %}
+    <div class="empty-state">
+        <h3>No Market Data Found</h3>
+        <p>The database is empty or today's pipeline hasn't run yet.</p>
+        <button class="btn" id="runPipelineBtn" onclick="runPipeline()">Run Pipeline</button>
+    </div>
+    {% else %}
+    <div class="chart-section">
+        <div class="card-container chart-wrapper">
+            {{ chart_24k|safe }}
+        </div>
+        <div class="card-container chart-wrapper">
+            {{ chart_22k|safe }}
         </div>
     </div>
+    {% endif %}
+
+
 
 </div>
 
-<div class="chart-card">
-    {{ chart_24k|safe }}
-</div>
-
-<div class="chart-card">
-    {{ chart_22k|safe }}
-</div>
-
-<div class="ai-report">
-    <h2>🤖 AI Market Analysis</h2>
-
-    <div class="report-content">
-        {{ ai_report }}
-    </div>
-</div>
-
-<div class="notice">
-
-    <h3>⚠️ Price Estimate Notice</h3>
-
-    <p>
-        Prices shown are estimated Hyderabad retail rates
-        derived from international gold prices and USD/INR
-        exchange rates.
-    </p>
-
-    <ul>
-        <li>Import duties</li>
-        <li>GST</li>
-        <li>Jeweller premiums</li>
-        <li>Local market conditions</li>
-    </ul>
-
-    <p style="margin-top:10px;">
-        Actual retail prices may vary from local jeweller rates.
-    </p>
-
-</div>
-
+<script>
+function runPipeline() {
+    showLoading('runPipelineBtn', 'Running...');
+    fetch('/run')
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success') {
+                window.location.reload();
+            } else {
+                alert('Error running pipeline: ' + data.message);
+                hideLoading('runPipelineBtn');
+            }
+        })
+        .catch(error => {
+            alert('Network error');
+            hideLoading('runPipelineBtn');
+        });
+}
+</script>
 {% endblock %}
