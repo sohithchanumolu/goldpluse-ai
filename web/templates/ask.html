@@ -21,8 +21,8 @@
                             <p><strong>Recommendation:</strong> {{ chat.parsed_answer.get("Recommendation", "") }}</p>
                             <p><strong>Risk:</strong> {{ chat.parsed_answer.get("Risk Level", "") }}</p>
                         {% else %}
-                            <!-- Assume it's markdown string (new format) -->
-                            {{ chat.parsed_answer }}
+<!-- Assume it's markdown string (new format) -->
+{{ chat.parsed_answer }}
                         {% endif %}
                     </div>
                     <div class="message-actions">
@@ -75,7 +75,7 @@
         aiMessages.forEach(el => {
             // If it contains raw markdown text (not HTML from old JSON mapping)
             if (!el.querySelector('h3')) {
-                el.innerHTML = DOMPurify.sanitize(marked.parse(el.textContent));
+                el.innerHTML = DOMPurify.sanitize(marked.parse(el.textContent.trim()));
             }
         });
         
