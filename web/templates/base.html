@@ -9,6 +9,15 @@
     <!-- Highlight.js CSS for Markdown code blocks -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
     <link rel="stylesheet" href="/static/css/styles.css">
+    <script>
+        // Apply saved theme immediately to prevent flash
+        (function() {
+            const savedTheme = localStorage.getItem('goldpulse-theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
 </head>
 <body class="fade-wrapper">
 
@@ -31,6 +40,10 @@
         <a href="/ask">Ask GoldPulse</a>
         <a href="/about">About</a>
     </div>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+        🌙
+    </button>
 </div>
 
 {% block content %}
@@ -42,7 +55,7 @@
         <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">💼 LinkedIn</a>
         <a href="https://t.me/GoldPluse_AI_bot" target="_blank" aria-label="Telegram">📱 Telegram</a>
     </div>
-    <div>Version 1.0.0</div>
+    <div>Version 1.0.1</div>
     <div style="margin-top: 5px;">&copy; 2026 Sohith</div>
 </div>
 

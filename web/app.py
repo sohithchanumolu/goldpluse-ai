@@ -1,5 +1,6 @@
 import uuid
 import json
+import re
 import plotly.express as px
 from src.gold_assistant import ask_goldpulse, stream_goldpulse
 from src.main import main
@@ -222,19 +223,167 @@ def history(request: Request, page: int = 1):
 
 @app.get("/analysis")
 def analysis(request: Request):
-    from pathlib import Path
     report_file = Path("data/latest_report.txt")
-    
-    if report_file.exists():
-        with open(report_file, "r", encoding="utf-8") as file:
-            report = file.read()
+
+    if not report_file.exists():
+        return templates.TemplateResponse(
+            request=request,
+            name="analysis.html",
+            context={"report_type": "empty"}
+        )
+
+    with open(report_file, "r", encoding="utf-8") as file:
+        raw_content = file.read().strip()
+
+    if not raw_content:
+        return templates.TemplateResponse(
+            request=request,
+            name="analysis.html",
+            context={"report_type": "empty"}
+        )
+
+    # Try to parse as JSON first
+    try:
+        report_data = json.loads(raw_content)
+        if isinstance(report_data, dict):
+            return templates.TemplateResponse(
+                request=request,
+                name="analysis.html",
+                context={
+                    "report_type": "json",
+                    "report_data": report_data
+                }
+            )
+    except (json.JSONDecodeError, ValueError):
+        pass
+
+    # Fall back to parsing plain text into sections
+    section_icons = {
+        "macroeconomic": "🌍",
+        "technical": "📊",
+        "retail": "💍",
+        "jewellery": "💍",
+        "strategic": "🎯",
+        "recommendation": "🎯",
+        "outlook": "🔮",
+        "summary": "📋",
+        "risk": "⚠️",
+        "overview": "🌍",
+        "price": "📈",
+        "analysis": "📊",
+        "insight": "🔑",
+    }
+
+    def pick_icon(title_text):
+        title_lower = title_text.lower()
+        for keyword, icon in section_icons.items():
+            if keyword in title_lower:
+                return icon
+        return "📌"
+
+    def clean_text(text):
+        """Remove stray brackets, quotes, and other artifacts from text."""
+        text = text.strip()
+        # Remove leading/trailing brackets and quotes
+        text = re.sub(r'^[\[\{"\']|[\]\}"\']$', '', text)
+        # Remove comma at end if leftover from JSON-like content
+        text = re.sub(r',\s*$', '', text)
+        # Clean up any remaining JSON artifacts
+        text = text.replace('\\"', '"')
+        return text.strip()
+
+    def format_title(raw_title):
+        """Convert UPPERCASE_HEADER to Title Case."""
+        raw_title = raw_title.strip().rstrip(':')
+        # Replace underscores with spaces, then title-case
+        title = raw_title.replace('_', ' ')
+        # Convert to title case if all-caps
+        if title == title.upper():
+            title = title.title()
+        return title
+
+    sections = []
+    # Split on lines that look like section headers (ALL CAPS followed by colon)
+    header_pattern = re.compile(r'^([A-Z][A-Z &/\(\)\-]+):\s*$', re.MULTILINE)
+    parts = header_pattern.split(raw_content)
+
+    if len(parts) <= 1:
+        # No section headers found — treat the whole content as one section
+        lines = raw_content.strip().split('\n')
+        paragraphs = []
+        bullets = []
+        for line in lines:
+            stripped = line.strip()
+            if not stripped:
+                continue
+            if stripped.startswith('- '):
+                bullets.append(clean_text(stripped[2:]))
+            else:
+                paragraphs.append(clean_text(stripped))
+        sections.append({
+            "title": "Analysis Report",
+            "icon": "📊",
+            "paragraphs": paragraphs,
+            "bullets": bullets
+        })
     else:
-        report = "No AI report generated yet. Run the data pipeline first."
+        # parts[0] might be empty or contain intro text before first header
+        intro = parts[0].strip()
+        if intro:
+            paragraphs = [clean_text(p) for p in intro.split('\n') if p.strip()]
+            sections.append({
+                "title": "",
+                "icon": "📋",
+                "paragraphs": paragraphs,
+                "bullets": []
+            })
+
+        # Iterate header/content pairs
+        i = 1
+        while i < len(parts) - 1:
+            raw_title = parts[i]
+            content = parts[i + 1] if i + 1 < len(parts) else ""
+            title = format_title(raw_title)
+            icon = pick_icon(title)
+
+            lines = content.strip().split('\n')
+            paragraphs = []
+            bullets = []
+            current_para = []
+
+            for line in lines:
+                stripped = line.strip()
+                if not stripped:
+                    if current_para:
+                        paragraphs.append(clean_text(' '.join(current_para)))
+                        current_para = []
+                    continue
+                if stripped.startswith('- '):
+                    if current_para:
+                        paragraphs.append(clean_text(' '.join(current_para)))
+                        current_para = []
+                    bullets.append(clean_text(stripped[2:]))
+                else:
+                    current_para.append(stripped)
+
+            if current_para:
+                paragraphs.append(clean_text(' '.join(current_para)))
+
+            sections.append({
+                "title": title,
+                "icon": icon,
+                "paragraphs": paragraphs,
+                "bullets": bullets
+            })
+            i += 2
 
     return templates.TemplateResponse(
         request=request,
         name="analysis.html",
-        context={"report": report}
+        context={
+            "report_type": "text",
+            "report_sections": sections
+        }
     )
 
 @app.get("/ask")

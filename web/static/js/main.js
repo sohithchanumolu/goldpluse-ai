@@ -20,6 +20,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Dark Mode Toggle
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        const currentTheme = localStorage.getItem('goldpulse-theme') || 'light';
+        themeToggle.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('goldpulse-theme', 'light');
+                themeToggle.textContent = '🌙';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('goldpulse-theme', 'dark');
+                themeToggle.textContent = '☀️';
+            }
+        });
+    }
+
     // Add fade-in animation to main sections
     const fadeElements = document.querySelectorAll('.fade-wrapper');
     fadeElements.forEach(el => {

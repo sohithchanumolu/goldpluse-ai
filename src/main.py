@@ -1,4 +1,5 @@
 import asyncio
+import json
 from src.alerts import check_alerts
 from src.analyzer import generate_report, get_price_summary
 from src.telegram_bot import send_message
@@ -39,7 +40,6 @@ def main():
     summary = get_price_summary()
     report = generate_report()
 
-    import json
     try:
         report_data = json.loads(report)
         formatted_report = f"🤖 AI Summary: {report_data.get('summary', '')}\n\n"

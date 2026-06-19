@@ -1,6 +1,6 @@
 # GoldPulse AI
 
-AI-powered gold price intelligence platform that tracks daily gold prices, generates market insights, stores historical data, and sends automated Telegram alerts.
+AI-powered gold price intelligence platform that tracks daily gold prices, generates market insights, stores historical data, provides an interactive AI assistant, and sends automated Telegram alerts.
 
 ## Live Demo
 
@@ -43,6 +43,19 @@ Telegram Bot: https://t.me/GoldPluse_AI_bot
 * Gold price notifications
 * Market trend updates
 
+### Ask GoldPulse AI Assistant
+
+* Real-time streaming AI responses
+* RAG-powered context from historical reports
+* Chat memory with session continuity
+* Markdown-rendered answers
+
+### Dark Mode
+
+* System-wide dark theme toggle
+* Persists across pages and sessions
+* Smooth animated transitions
+
 ---
 
 ## Technology Stack
@@ -67,6 +80,9 @@ Telegram Bot: https://t.me/GoldPluse_AI_bot
 ### AI
 
 * Google Gemini
+* LangChain
+* ChromaDB (RAG Vector Store)
+* HuggingFace Embeddings
 
 ### Deployment
 
@@ -131,11 +147,25 @@ Displays complete historical gold price records.
 <p align="center">
   <img src="assets/analysis.png" width="900">
 </p>
-Shows detailed AI-generated market insights.
+Shows detailed AI-generated market insights with structured sections:
+
+* Macroeconomic overview
+* Technical price action
+* Retail & jewellery outlook
+* Strategic recommendations
+
+### Ask GoldPulse
+
+Interactive AI chat assistant with:
+
+* Real-time streaming responses
+* RAG-powered historical context
+* Session-based chat memory
+* Suggested prompts for quick start
 
 ### About
 
-Project overview and objectives.
+Project overview, technology stack, and development timeline.
 
 ---
 
@@ -210,6 +240,7 @@ https://goldpluse-ai-production.up.railway.app/run
 * Mobile application
 * Advanced analytics dashboard
 * Multi-city gold tracking
+* Historical report backfill
 
 ---
 
