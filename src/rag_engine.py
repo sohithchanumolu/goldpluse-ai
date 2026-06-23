@@ -1,14 +1,20 @@
 import os
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_chroma import Chroma
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
-# Create a folder to store the local vector database
 DB_DIR = "data/chroma_db"
 
+def get_embedding_model():
+    """Initializes the cloud-based Google Embedding model using your existing API Key."""
+    return GoogleGenerativeAIEmbeddings(
+        model="text-embedding-004", 
+        google_api_key=os.getenv("GEMINI_API_KEY")
+    )
+
 def initialize_vector_db():
-    print("Initializing RAG Vector Database...")
+    print("Initializing RAG Vector Database using Google Cloud API...")
     
     # 1. Load the knowledge and history files
     documents = []
@@ -27,7 +33,7 @@ def initialize_vector_db():
         print("No documents found to process.")
         return None
 
-    # 2. Split the text into manageable chunks for the AI
+    # 2. Split the text into manageable chunks
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=500,
         chunk_overlap=50
@@ -35,9 +41,8 @@ def initialize_vector_db():
     chunks = text_splitter.split_documents(documents)
     print(f"Split documents into {len(chunks)} chunks.")
 
-    # 3. Create Embeddings (Converts text to math vectors)
-    # Using an open-source, lightweight model that runs locally
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    # 3. Connect to cloud embeddings
+    embeddings = get_embedding_model()
 
     # 4. Save to ChromaDB
     vector_db = Chroma.from_documents(
@@ -46,21 +51,21 @@ def initialize_vector_db():
         persist_directory=DB_DIR
     )
     
-    print("✅ ChromaDB initialized successfully!")
+    print("✅ ChromaDB initialized successfully via Google API!")
     return vector_db
 
 def get_retriever():
-    """Returns the retriever object to be used by our assistant."""
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    """Returns the retriever object using the cloud embedding function."""
+    embeddings = get_embedding_model()
     
-    # Load the existing database
+    # Load the existing database structure safely
     if os.path.exists(DB_DIR):
         vector_db = Chroma(persist_directory=DB_DIR, embedding_function=embeddings)
-        # Search for the top 3 most relevant chunks
         return vector_db.as_retriever(search_kwargs={"k": 3})
     else:
         return None
 
 if __name__ == "__main__":
-    # Run this file directly to build the database for the first time
+    from dotenv import load_dotenv
+    load_dotenv()
     initialize_vector_db()

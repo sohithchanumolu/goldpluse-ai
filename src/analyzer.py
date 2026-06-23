@@ -1,10 +1,9 @@
+import os
 import pandas as pd
 from dotenv import load_dotenv
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
-import os
 from src.fetch_price import get_usd_inr_rate
-
 from src.database import (
     SessionLocal,
     get_last_n_days
@@ -35,6 +34,7 @@ def get_price_summary(days=7):
 
     df = pd.DataFrame(data)
 
+    # df.iloc[0] is the most recent row fetched from the database
     current_24k = df.iloc[0]["price_24k"]
     average_24k = df["price_24k"].mean()
 
@@ -57,50 +57,47 @@ def get_price_summary(days=7):
     }
 
 load_dotenv()
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
-    google_api_key=os.getenv(
-        "GEMINI_API_KEY"
-    )
+
+llm = ChatGroq(
+    model_name="llama-3.1-8b-instant",
+    groq_api_key=os.getenv("GROQ_API_KEY"),
+    temperature=0.2
 )
 
 def generate_report():
     summary = get_price_summary()
-    prompt = ChatPromptTemplate.from_template(
-    """
-    You are a Senior Commodities Analyst specializing in the Indian Gold Market.
-    Analyze the following daily market data and provide a comprehensive, highly valuable institutional-grade briefing.
-
-    MARKET DATA:
-    City: Hyderabad
-    USD/INR Exchange Rate: {usd_inr_rate}
-
-    24K Gold (Investment Grade):
-    - Current Price: ₹{current_24k}/gram
-    - 7-Day Moving Average: ₹{average_24k}/gram
-
-    22K Gold (Retail/Jewellery):
-    - Current Price: ₹{current_22k}/gram
-    - 7-Day Moving Average: ₹{average_22k}/gram
-
-    Momentum Indicator: {trend}
-
-    You MUST output ONLY a raw JSON object (without any markdown code blocks, backticks, or other text).
-    The JSON object MUST have EXACTLY these keys:
-    - "summary": A 2-3 sentence macroeconomic and technical summary, explicitly mentioning the USD/INR rate.
-    - "trend": "Bullish", "Bearish", or "Neutral".
-    - "confidence": An integer representing your confidence score out of 100 (e.g., 92).
-    - "risk": "Low", "Medium", or "High".
-    - "recommendation": A short, punchy actionable recommendation (e.g., "Buy on dips").
-    - "key_insights": A list of 3-4 strings containing specific, practical insights for retail and investment consumers.
-
-    Write in a highly professional, authoritative financial tone. Do not just repeat numbers; provide deep reasoning.
-    """
-    )
+    prompt = ChatPromptTemplate.from_messages([
+        (
+            "system",
+            "You are an expert Senior Commodities Analyst specializing strictly in the Indian Gold Market.\n"
+            "CRITICAL RULES:\n"
+            "1. You MUST evaluate, analyze, and state all gold values exclusively in Indian Rupees (INR / ₹) per gram.\n"
+            "2. Do NOT convert numbers to US Dollars ($ / USD) or ounces under any circumstances.\n"
+            "3. The USD/INR exchange rate should only be referenced to explain macroeconomic pressure on Indian imports.\n"
+            "4. You MUST output ONLY a raw JSON object matching the exact keys requested by the human, without markdown formatting or backticks."
+        ),
+        (
+            "human",
+            "Analyze the following daily market data for Hyderabad:\n\n"
+            "USD/INR Exchange Rate: {usd_inr_rate}\n\n"
+            "24K Gold Price: ₹{current_24k}/gram\n"
+            "24K 7-Day Moving Average: ₹{average_24k}/gram\n\n"
+            "22K Gold Price: ₹{current_22k}/gram\n"
+            "22K 7-Day Moving Average: ₹{average_22k}/gram\n\n"
+            "Momentum Indicator: {trend}\n\n"
+            "Provide the output as a raw JSON object with exactly these keys:\n"
+            "- \"summary\": A 2-3 sentence macroeconomic and technical analysis written in an authoritative tone, discussing trends strictly in Indian Rupees (₹) and mentioning the USD/INR rate.\n"
+            "- \"trend\": \"Bullish\", \"Bearish\", or \"Neutral\".\n"
+            "- \"confidence\": An integer score out of 100.\n"
+            "- \"risk\": \"Low\", \"Medium\", or \"High\".\n"
+            "- \"recommendation\": A short, punchy action step.\n"
+            "- \"key_insights\": A list of 3-4 specific insight strings for Indian retail buyers."
+        )
+    ])
 
     chain = prompt | llm
     response = chain.invoke(summary)
     
-    # Strip any markdown ticks just in case the LLM outputs them
+    # Strip any potential markdown artifacts
     content = response.content.replace("```json", "").replace("```", "").strip()
     return content

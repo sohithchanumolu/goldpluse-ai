@@ -79,10 +79,10 @@ Telegram Bot: https://t.me/GoldPluse_AI_bot
 
 ### AI
 
-* Google Gemini
+* Groq (LLaMA 3.1)
+* Google Gemini (Embeddings)
 * LangChain
 * ChromaDB (RAG Vector Store)
-* HuggingFace Embeddings
 
 ### Deployment
 
@@ -108,7 +108,7 @@ Data Collection Pipeline
 PostgreSQL Database
     │
     ▼
-AI Analysis (Gemini)
+AI Analysis (Groq & Gemini)
     │
     ├── Website Dashboard
     │
@@ -198,6 +198,7 @@ Create a `.env` file:
 ```env
 DATABASE_URL=your_postgresql_url
 GEMINI_API_KEY=your_gemini_api_key
+GROQ_API_KEY=your_groq_api_key
 TELEGRAM_BOT_TOKEN=your_bot_token
 TELEGRAM_CHAT_ID=your_chat_id
 ```
